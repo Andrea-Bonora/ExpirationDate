@@ -125,7 +125,9 @@
             ChevronDown: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>,
             ChevronUp: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>,
             ZoomIn: () => <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>,
-            LogOut: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            LogOut: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
+            User: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>,
+            Warning: () => <svg viewBox="0 0 24 24" className="w-12 h-12 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         };
 
         const Toast = ({ message, onClose }) => {
@@ -151,35 +153,47 @@
             );
         };
 
+        // ENORMOUS ACTIVITY LIST MAP
         const ACTIVITIES_MAP = {
             // Salute
-            'Visita Odontoiatrica/Pulizia': 'Salute', 'Visita Cardiologica': 'Salute', 'Visita Dermatologica/Mappa Nei': 'Salute', 
+            'Visita Odontoiatrica': 'Salute', 'Pulizia Denti': 'Salute', 'Sbiancamento Dentale': 'Salute',
+            'Visita Cardiologica': 'Salute', 'Elettrocardiogramma': 'Salute',
+            'Visita Dermatologica': 'Salute', 'Mappatura Nei': 'Salute', 
             'Visita Oculistica': 'Salute', 'Visita Ortopedica': 'Salute', 'Visita Podologica': 'Salute', 
-            'Visita Ginecologica': 'Salute', 'Visita Urologica': 'Salute', 'Visita Otorinolaringoiatrica': 'Salute', 
+            'Visita Ginecologica': 'Salute', 'Pap Test': 'Salute', 'Visita Urologica': 'Salute', 'Visita Otorinolaringoiatrica': 'Salute', 
             'Visita Medico Sportiva': 'Salute', 'Visita Gastroenterologica': 'Salute', 'Visita Endocrinologica': 'Salute', 
-            'Esami del Sangue': 'Salute', 'Vaccinazione Antinfluenzale': 'Salute', 'Vaccinazione/Richiamo': 'Salute', 
-            'Fisioterapia': 'Salute', 'Donazione Sangue': 'Salute',
-            // Documenti
-            'Carta d\'Identità': 'Documenti', 'Patente di Guida': 'Documenti', 'Passaporto': 'Documenti', 
-            'Tessera Sanitaria': 'Documenti', 'SPID/PEC': 'Documenti', 'Firma Digitale': 'Documenti', 
-            'Visto Turistico/Lavorativo': 'Documenti', 'Permesso di Soggiorno': 'Documenti', 'Porto d\'armi': 'Documenti',
+            'Esami del Sangue': 'Salute', 'Esami Urine': 'Salute', 
+            'Vaccinazione Antinfluenzale': 'Salute', 'Richiamo Vaccino': 'Salute', 'Vaccinazione Covid': 'Salute',
+            'Fisioterapia': 'Salute', 'Osteopata': 'Salute', 'Donazione Sangue': 'Salute', 'Visita Pediatrica': 'Salute',
+            'Ecografia': 'Salute', 'Risonanza Magnetica': 'Salute',
+            // Documenti Personali
+            'Carta d\'Identità': 'Documenti Personali', 'Patente di Guida': 'Documenti Personali', 'Passaporto': 'Documenti Personali', 
+            'Tessera Sanitaria': 'Documenti Personali', 'SPID': 'Documenti Personali', 'PEC': 'Documenti Personali', 'Firma Digitale': 'Documenti Personali', 
+            'Visto Turistico': 'Documenti Personali', 'Visto Lavorativo': 'Documenti Personali', 'Permesso di Soggiorno': 'Documenti Personali', 'Porto d\'armi': 'Documenti Personali',
             // Veicoli
-            'Bollo Auto': 'Veicoli', 'Bollo Moto': 'Veicoli', 'Assicurazione Auto': 'Veicoli', 'Assicurazione Moto': 'Veicoli', 
+            'Bollo Auto': 'Veicoli', 'Bollo Moto': 'Veicoli', 'Assicurazione Auto (RC)': 'Veicoli', 'Assicurazione Moto (RC)': 'Veicoli', 
             'Revisione Auto': 'Veicoli', 'Revisione Moto': 'Veicoli', 'Tagliando Auto': 'Veicoli', 'Tagliando Moto': 'Veicoli', 
-            'Cambio Gomme': 'Veicoli', 'Controllo Fumi': 'Veicoli',
+            'Cambio Gomme Estive': 'Veicoli', 'Cambio Gomme Invernali': 'Veicoli', 'Controllo Fumi Veicolo': 'Veicoli',
+            'Rinnovo Parcheggio Residenti': 'Veicoli', 'Telepass': 'Veicoli',
             // Casa
             'Manutenzione Caldaia': 'Casa', 'Controllo Fumi Caldaia': 'Casa', 'Pulizia Condizionatori': 'Casa', 
-            'Assicurazione Casa': 'Casa', 'Affitto': 'Casa', 'TARI': 'Casa', 'IMU': 'Casa', 
-            'Estintori': 'Casa', 'Filtri Acqua': 'Casa', 'Allarme': 'Casa',
-            // Lavoro/Finanze
-            '730/Unico': 'Lavoro/Finanze', 'Modello ISEE': 'Lavoro/Finanze', 
-            'Carta di Credito': 'Lavoro/Finanze', 'Bancomat': 'Lavoro/Finanze', 'Medicina del Lavoro': 'Lavoro/Finanze', 
-            'Assicurazione Professionale': 'Lavoro/Finanze',
+            'Assicurazione Casa': 'Casa', 'Affitto': 'Casa', 'TARI (Spazzatura)': 'Casa', 'IMU': 'Casa', 
+            'Manutenzione Estintori': 'Casa', 'Cambio Filtri Acqua': 'Casa', 'Manutenzione Allarme': 'Casa',
+            'Contratto Luce': 'Casa', 'Contratto Gas': 'Casa', 'Contratto Internet': 'Casa', 'Spese Condominiali': 'Casa',
+            // Lavoro & Finanze
+            '730 / Modello Unico': 'Lavoro & Finanze', 'Modello ISEE': 'Lavoro & Finanze', 
+            'Scadenza Carta di Credito': 'Lavoro & Finanze', 'Scadenza Bancomat': 'Lavoro & Finanze', 
+            'Visita Medicina del Lavoro': 'Lavoro & Finanze', 'Assicurazione Professionale': 'Lavoro & Finanze',
+            'Assicurazione Vita': 'Lavoro & Finanze', 'Assicurazione Sanitaria Privata': 'Lavoro & Finanze',
+            'Rata Mutuo/Finanziamento': 'Lavoro & Finanze',
             // Animali
-            'Vaccinazione Cane/Gatto': 'Animali', 'Antiparassitario': 'Animali', 'Visita Veterinaria': 'Animali',
-            // Abbonamenti
-            'Palestra/Piscina': 'Abbonamenti', 'Mezzi Pubblici': 'Abbonamenti', 'Rinnovo Hosting/Dominio': 'Abbonamenti', 
-            'Assicurazione Viaggio': 'Abbonamenti',
+            'Vaccinazione Cane': 'Animali', 'Vaccinazione Gatto': 'Animali', 'Antiparassitario Animale': 'Animali', 
+            'Profilassi Filaria': 'Animali', 'Visita Veterinaria Generale': 'Animali', 'Passaporto Animale': 'Animali',
+            // Sport & Abbonamenti
+            'Abbonamento Palestra': 'Sport & Abbonamenti', 'Abbonamento Piscina': 'Sport & Abbonamenti', 'Corso di Lingue': 'Sport & Abbonamenti',
+            'Abbonamento Mezzi Pubblici': 'Sport & Abbonamenti', 'Rinnovo Hosting/Dominio': 'Sport & Abbonamenti', 
+            'Assicurazione Viaggio': 'Sport & Abbonamenti', 'Abbonamento Streaming (Netflix/ecc)': 'Sport & Abbonamenti',
+            'Abbonamento Software': 'Sport & Abbonamenti',
             // Varie
             'Altro (Specifica nelle note)': 'Varie'
         };
@@ -224,7 +238,7 @@
         };
 
         // --- SCHERMATA: CASSETTIERA (HOME) ---
-        const Cassettiera = ({ documents, username, onDocClick, onLogout }) => {
+        const Cassettiera = ({ documents, username, onDocClick, onSettingsClick }) => {
             const [collapsedCats, setCollapsedCats] = useState({});
 
             const groupedDocs = useMemo(() => {
@@ -233,6 +247,16 @@
                     if (!groups[doc.category]) groups[doc.category] = [];
                     groups[doc.category].push(doc);
                 });
+                
+                // Ordina documenti all'interno di ogni categoria per scadenza (più vicina prima)
+                Object.keys(groups).forEach(cat => {
+                    groups[cat].sort((a, b) => {
+                        if (!a.scadenza) return 1;
+                        if (!b.scadenza) return -1;
+                        return new Date(a.scadenza) - new Date(b.scadenza);
+                    });
+                });
+
                 return groups;
             }, [documents]);
 
@@ -245,8 +269,8 @@
                             <h1 className="text-4xl font-black text-white">{username ? `Ciao, ${username}` : 'Archivio'}</h1>
                             <p className="text-white/70 mt-1 text-sm">Il tuo schedario personale.</p>
                         </div>
-                        <button onClick={onLogout} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-rose-300" title="Disconnettiti">
-                            <Icons.LogOut />
+                        <button onClick={onSettingsClick} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white" title="Impostazioni Profilo">
+                            <Icons.User />
                         </button>
                     </div>
 
@@ -304,21 +328,23 @@
 
         // --- SCHERMATA: SCADENZE ---
         const Scadenze = ({ documents, onDocClick }) => {
+            const [monthsFilter, setMonthsFilter] = useState(3); // 1, 3, or 6
+
             const expiringDocs = useMemo(() => {
                 const now = new Date();
                 now.setHours(0,0,0,0);
                 
-                const threeMonthsFromNow = new Date();
-                threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
+                const filterDate = new Date();
+                filterDate.setMonth(filterDate.getMonth() + monthsFilter);
                 
                 const filtered = documents.filter(doc => {
                     if (!doc.scadenza) return false;
                     const exp = new Date(doc.scadenza);
-                    return exp <= threeMonthsFromNow; 
+                    return exp <= filterDate; 
                 });
                 
                 return filtered.sort((a,b) => new Date(a.scadenza) - new Date(b.scadenza));
-            }, [documents]);
+            }, [documents, monthsFilter]);
 
             const currentMonth = new Date().getMonth();
             const currentYear = new Date().getFullYear();
@@ -329,13 +355,25 @@
                         <div className="text-sky-300 bg-sky-500/20 p-2 rounded-xl"><Icons.Clock /></div>
                         <div>
                             <h1 className="text-3xl font-black text-white">Scadenze</h1>
-                            <p className="text-white/70 text-xs">Prossimi 3 mesi</p>
                         </div>
+                    </div>
+                    
+                    {/* Time Filter Selector */}
+                    <div className="flex bg-black/40 backdrop-blur-md rounded-xl p-1 border border-white/10 shadow-inner">
+                        {[1, 3, 6].map(m => (
+                            <button 
+                                key={m} 
+                                onClick={() => setMonthsFilter(m)}
+                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${monthsFilter === m ? 'bg-white/20 text-white shadow-sm' : 'text-white/50 hover:text-white/80'}`}
+                            >
+                                {m} {m === 1 ? 'Mese' : 'Mesi'}
+                            </button>
+                        ))}
                     </div>
 
                     <div className="pt-2 space-y-4">
                         {expiringDocs.length === 0 && (
-                            <p className="text-white/50 text-center italic mt-10">Nessuna scadenza imminente nei prossimi 3 mesi. Ottimo!</p>
+                            <p className="text-white/50 text-center italic mt-10">Nessuna scadenza imminente nei prossimi {monthsFilter} mesi. Ottimo!</p>
                         )}
                         {expiringDocs.map(doc => {
                             const expDate = new Date(doc.scadenza);
@@ -415,7 +453,7 @@
             const [loading, setLoading] = useState(false);
             const [toastMsg, setToastMsg] = useState('');
             
-            // Add form states
+            // App states
             const [newDoc, setNewDoc] = useState({ name: '', dataSvolgimento: '', scadenza: '', note: '' });
             const [photoProcessed, setPhotoProcessed] = useState(null);
             const [searchTerm, setSearchTerm] = useState('');
@@ -424,6 +462,10 @@
             const [selectedDoc, setSelectedDoc] = useState(null); 
             const [zoomedImage, setZoomedImage] = useState(null);
             const [isProcessing, setIsProcessing] = useState(false);
+            const [settingsOpen, setSettingsOpen] = useState(false);
+
+            // Duplicate Handling State
+            const [duplicateModal, setDuplicateModal] = useState({ isOpen: false, newDocData: null, existingDocId: null });
 
             useEffect(() => {
                 if (firebaseConfig.apiKey === "INCOLLA_QUI") return;
@@ -451,7 +493,10 @@
                 return () => unsubscribe();
             }, [user]);
 
-            const handleLogout = () => auth.signOut();
+            const handleLogout = () => {
+                setSettingsOpen(false);
+                auth.signOut();
+            };
 
             const handlePhotoSelection = async (e) => {
                 const file = e.target.files[0];
@@ -472,7 +517,18 @@
                 return Object.keys(ACTIVITIES_MAP).filter(a => a.toLowerCase().includes(searchTerm.toLowerCase()));
             }, [searchTerm]);
 
-            const handleSaveNewDoc = () => {
+            const executeSaveToDb = (docToAdd) => {
+                db.collection("user_documents").add(docToAdd).then(() => {
+                    setIsAddOpen(false); 
+                    setNewDoc({ name: '', dataSvolgimento: '', scadenza: '', note: '' }); 
+                    setSearchTerm('');
+                    setPhotoProcessed(null);
+                    setDuplicateModal({ isOpen: false, newDocData: null, existingDocId: null });
+                    setToastMsg("Attività salvata con successo!");
+                }).catch(err => setToastMsg("Errore salvataggio: " + err.message));
+            };
+
+            const handleSaveRequest = () => {
                 const finalName = newDoc.name || searchTerm;
                 if (!finalName || !newDoc.scadenza) {
                     return setToastMsg("Inserisci il Nome dell'attività e la Scadenza!");
@@ -495,14 +551,23 @@
                     note: newDoc.note || '',
                     photo: photoProcessed 
                 };
-                
-                db.collection("user_documents").add(docToAdd).then(() => {
-                    setIsAddOpen(false); 
-                    setNewDoc({ name: '', dataSvolgimento: '', scadenza: '', note: '' }); 
-                    setSearchTerm('');
-                    setPhotoProcessed(null);
-                    setToastMsg("Attività salvata!");
-                }).catch(err => setToastMsg("Errore salvataggio: " + err.message));
+
+                // DUPLICATE CHECK
+                const existingDoc = documents.find(d => d.name.toLowerCase() === finalName.toLowerCase());
+                if (existingDoc) {
+                    setDuplicateModal({ isOpen: true, newDocData: docToAdd, existingDocId: existingDoc.id });
+                } else {
+                    executeSaveToDb(docToAdd);
+                }
+            };
+
+            const handleReplaceDuplicate = () => {
+                if(!duplicateModal.existingDocId) return;
+                db.collection("user_documents").doc(duplicateModal.existingDocId).delete()
+                  .then(() => {
+                      executeSaveToDb(duplicateModal.newDocData);
+                  })
+                  .catch(err => setToastMsg("Errore sostituzione: " + err.message));
             };
 
             const confirmDeleteDoc = () => {
@@ -538,7 +603,7 @@
                 );
             }
 
-            const isAnyModalOpen = isAddOpen || selectedDoc || isProcessing || zoomedImage;
+            const isAnyModalOpen = isAddOpen || selectedDoc || isProcessing || zoomedImage || settingsOpen || duplicateModal.isOpen;
 
             return (
               <div className="relative min-h-screen">
@@ -552,7 +617,7 @@
                 
                 <div className="max-w-xl mx-auto pb-32 relative z-10 pt-safe">
                   {loading && <div className="text-center mt-20 text-white/50 font-medium animate-pulse">Sincronizzazione archivio...</div>}
-                  {!loading && activeTab === 'home' && <Cassettiera documents={documents} username={username} onDocClick={setSelectedDoc} onLogout={handleLogout} />}
+                  {!loading && activeTab === 'home' && <Cassettiera documents={documents} username={username} onDocClick={setSelectedDoc} onSettingsClick={() => setSettingsOpen(true)} />}
                   {!loading && activeTab === 'scadenze' && <Scadenze documents={documents} onDocClick={setSelectedDoc} />}
                 </div>
 
@@ -593,10 +658,51 @@
                     </div>
                 )}
 
+                {/* MODAL: SETTINGS & PROFILE */}
+                {settingsOpen && (
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] flex items-center justify-center p-4" onClick={() => setSettingsOpen(false)}>
+                        <div className="glass-panel rounded-3xl w-full max-w-sm relative text-center border-white/20 p-8 shadow-2xl" onClick={e => e.stopPropagation()}>
+                            <button onClick={() => setSettingsOpen(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><Icons.X /></button>
+                            <div className="flex justify-center text-white mb-4"><Icons.User /></div>
+                            <h2 className="text-2xl font-black text-white mb-1">Profilo</h2>
+                            <p className="text-white/60 text-sm mb-8">{user.email}</p>
+                            
+                            <button onClick={handleLogout} className="w-full py-3 bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/50 text-rose-300 font-bold rounded-xl transition-colors flex justify-center items-center gap-2">
+                                <Icons.LogOut /> Disconnettiti
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL: DUPLICATE CHECK WARNING */}
+                {duplicateModal.isOpen && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[80] flex items-center justify-center p-4" onClick={() => setDuplicateModal({ isOpen: false, newDocData: null, existingDocId: null })}>
+                        <div className="glass-panel rounded-3xl w-full max-w-sm relative text-center border-amber-500/30 p-8 shadow-[0_0_50px_rgba(251,191,36,0.15)]" onClick={e => e.stopPropagation()}>
+                            <div className="flex justify-center mb-4"><Icons.Warning /></div>
+                            <h2 className="text-2xl font-black text-white mb-2">Attività Esistente!</h2>
+                            <p className="text-white/80 text-sm mb-8">
+                                Hai già un'attività chiamata "<span className="font-bold text-amber-300">{duplicateModal.newDocData.name}</span>" in archivio.<br/><br/>Vuoi sostituire la vecchia o tenerle entrambe?
+                            </p>
+                            
+                            <div className="flex flex-col gap-3">
+                                <button onClick={handleReplaceDuplicate} className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-xl transition-colors shadow-lg">
+                                    Sostituisci la vecchia
+                                </button>
+                                <button onClick={() => executeSaveToDb(duplicateModal.newDocData)} className="w-full py-3.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-xl transition-colors">
+                                    Tieni entrambe
+                                </button>
+                                <button onClick={() => setDuplicateModal({ isOpen: false, newDocData: null, existingDocId: null })} className="w-full py-2 text-white/50 text-sm font-semibold hover:text-white mt-2">
+                                    Annulla salvataggio
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* MODAL: VIEW DETAILS / DELETE */}
                 {selectedDoc && !zoomedImage && (
                     <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[50] flex items-center justify-center p-4" onClick={() => setSelectedDoc(null)}>
-                        <div className="glass-panel rounded-3xl w-full max-w-sm relative flex flex-col max-h-[85vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+                        <div className="glass-panel rounded-3xl w-full max-w-sm relative flex flex-col max-h-[85vh] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
                             <div className="p-6 pb-2 border-b border-white/10 flex justify-between items-center bg-white/5">
                                 <div>
                                     <h2 className="text-2xl font-black text-white leading-tight">{selectedDoc.name}</h2>
@@ -721,7 +827,7 @@
                             )}
                         </div>
 
-                        <button onClick={handleSaveNewDoc} className="w-full py-4 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl transition-colors shadow-[0_4px_15px_rgba(14,165,233,0.4)] flex items-center justify-center gap-2 mt-4 text-lg">
+                        <button onClick={handleSaveRequest} className="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-400 hover:scale-[1.02] text-white font-bold rounded-xl transition-transform shadow-[0_4px_15px_rgba(14,165,233,0.4)] flex items-center justify-center gap-2 mt-4 text-lg">
                           <Icons.Save /> Salva nell'archivio
                         </button>
                       </div>
