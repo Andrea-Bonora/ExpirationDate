@@ -3,40 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MarathonApp</title>
+    <title>MyDocsApp</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MarathonApp">
+    <meta name="apple-mobile-web-app-title" content="MyDocs">
 
     <script>
       (function() {
           const canvas = document.createElement('canvas');
           canvas.width = 180; canvas.height = 180;
           const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#5B21CB'; ctx.fillRect(0, 0, 180, 180);
-          const scale = 10;
-          const drawP = (x, y, c) => { ctx.fillStyle = c; ctx.fillRect(x * scale, y * scale, scale, scale); };
-          const red = "#ef4444"; const blue = "#3b82f6";
-          for(let i=0; i<5; i++) { drawP(4+i, 3+i, red); drawP(5+i, 3+i, red); }
-          for(let i=0; i<5; i++) { drawP(13-i, 3+i, blue); drawP(12-i, 3+i, blue); }
-          const gold = "#fbbf24"; const dark = "#b45309"; const light = "#fef08a";
-          const medal = [
-              [7,8],[8,8],[9,8],[10,8],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9],
-              [5,10],[6,10],[7,10],[8,10],[9,10],[10,10],[11,10],[12,10],
-              [5,11],[6,11],[7,11],[8,11],[9,11],[10,11],[11,11],[12,11],
-              [5,12],[6,12],[7,12],[8,12],[9,12],[10,12],[11,12],[12,12],
-              [5,13],[6,13],[7,13],[8,13],[9,13],[10,13],[11,13],[12,13],
-              [6,14],[7,14],[8,14],[9,14],[10,14],[11,14],
-              [7,15],[8,15],[9,15],[10,15]
-          ];
-          medal.forEach(p => drawP(p[0], p[1], gold));
-          const shadow = [[6,14],[7,15],[8,15],[9,15],[10,15],[11,14],[12,13],[12,12],[12,11],[12,10]];
-          shadow.forEach(p => drawP(p[0], p[1], dark));
-          const high = [[6,9],[7,8],[8,8],[5,10],[5,11]];
-          high.forEach(p => drawP(p[0], p[1], light));
-          drawP(8,11, dark); drawP(9,11, dark); drawP(8,12, dark); drawP(9,12, dark);
-          
+          ctx.fillStyle = '#0891b2'; ctx.fillRect(0, 0, 180, 180);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(40, 30, 100, 120);
+          ctx.fillStyle = '#0891b2';
+          ctx.fillRect(55, 50, 70, 10);
+          ctx.fillRect(55, 75, 70, 10);
+          ctx.fillRect(55, 100, 40, 10);
           const link = document.createElement('link');
           link.rel = 'apple-touch-icon';
           link.href = canvas.toDataURL('image/png');
@@ -56,15 +40,16 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .medal-preview-bg { background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
         body { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
 <body class="bg-black text-white overflow-x-hidden min-h-screen" style="background-image: linear-gradient(135deg, #1e3a8a 0%, #111827 50%, #701a75 100%);">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useMemo } = React;
 
         class ErrorBoundary extends React.Component {
             constructor(props) { super(props); this.state = { hasError: false, error: null }; }
@@ -87,32 +72,27 @@
         }
 
         const Icons = {
-          Home: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-          History: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-          Medal: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="14" r="4"/><path d="M12 10V2l3 3 3-3v8"/></svg>,
-          Plus: () => <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-          Running: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="16" cy="4" r="1"/><path d="M12 6l-2 4 4 2-2 4"/><path d="M6 16l4-2"/><path d="M16 18l2-4"/></svg>,
-          Star: () => <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
-          X: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-          Save: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>,
-          Settings: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
-          Users: () => <svg viewBox="0 0 24 24" className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>,
-          Camera: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
-          Trash: () => <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>,
-          Refresh: () => <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>,
-          Lock: () => <svg viewBox="0 0 24 24" className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Home: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+            Plus: () => <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+            X: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+            Save: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>,
+            Settings: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+            Camera: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+            Trash: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>,
+            Lock: () => <svg viewBox="0 0 24 24" className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>,
+            Folder: () => <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>,
+            File: () => <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
         };
 
         const GlassCard = ({ children, className = '', onClick }) => (
-          <div onClick={onClick} className={`bg-white/20 backdrop-blur-xl border border-white/30 p-6 shadow-2xl ${className}`}>{children}</div>
+            <div onClick={onClick} className={`bg-white/20 backdrop-blur-xl border border-white/30 p-6 shadow-2xl ${className}`}>{children}</div>
         );
         const GlassButton = ({ children, className = '', ...props }) => (
-          <button {...props} className={`bg-white/20 backdrop-blur-lg border border-white/40 hover:bg-white/30 text-white transition-all duration-300 flex items-center justify-center gap-2 ${className}`}>{children}</button>
+            <button {...props} className={`bg-white/20 backdrop-blur-lg border border-white/40 hover:bg-white/30 text-white transition-all duration-300 flex items-center justify-center gap-2 ${className}`}>{children}</button>
         );
         const GlassInput = (props) => (
-          <input {...props} className={`block bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white placeholder:text-white/60 focus:ring-2 focus:ring-sky-200 outline-none w-full min-w-0 box-border m-0 appearance-none ${props.className || ''}`} />
+            <input {...props} className={`block bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white placeholder:text-white/60 focus:ring-2 focus:ring-sky-200 outline-none w-full min-w-0 box-border m-0 appearance-none ${props.className || ''}`} />
         );
-
         const GlassDateInput = ({ value, onChange, placeholder }) => {
             const [type, setType] = useState('text');
             return (
@@ -128,7 +108,7 @@
         };
 
         // ==========================================
-        // 1. INCOLLA QUI LA TUA CONFIGURAZIONE FIREBASE
+        // CONFIGURAZIONE FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyBCvUfyCeAhnPbmwRiPJyfDQORkjRIhFqo",
@@ -147,37 +127,46 @@
         const auth = firebase.auth();
         // ==========================================
 
-        const distances = { '10k': 10, 'Mezza Maratona': 21.1, 'Maratona': 42.2, 'Hyrox': 99 };
-        const getPBs = (races) => {
-            const pbs = {};
-            races.filter(r => r.completed).forEach(r => {
-                if (!pbs[r.type] || r.time < pbs[r.type].time) pbs[r.type] = r;
-            });
-            return Object.values(pbs).sort((a, b) => distances[a.type] - distances[b.type]);
+        const ACTIVITIES_MAP = {
+            'Patente di guida': 'Documenti',
+            "Carta d'Identità": 'Documenti',
+            'Passaporto': 'Documenti',
+            'Visita Medica Sportiva': 'Salute',
+            'Pulizia dei denti': 'Salute',
+            'Bollo Auto': 'Veicoli',
+            'Assicurazione Auto': 'Veicoli',
+            'Revisione Auto': 'Veicoli',
+            'Altro': 'Varie'
         };
 
-        const isolateMedal = (file) => {
+        const compressImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader(); 
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
                         try {
-                            const SIZE = 400; 
-                            const minDim = Math.min(img.width, img.height);
-                            if (minDim <= 0) throw new Error("Foto non valida");
+                            const MAX_SIZE = 800; 
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_SIZE) {
+                                    height *= MAX_SIZE / width;
+                                    width = MAX_SIZE;
+                                }
+                            } else {
+                                if (height > MAX_SIZE) {
+                                    width *= MAX_SIZE / height;
+                                    height = MAX_SIZE;
+                                }
+                            }
+
                             const canvas = document.createElement('canvas');
-                            canvas.width = SIZE; canvas.height = SIZE;
+                            canvas.width = width; canvas.height = height;
                             const ctx = canvas.getContext('2d');
-                            ctx.clearRect(0, 0, SIZE, SIZE);
-                            const sx = (img.width - minDim) / 2;
-                            const sy = (img.height - minDim) / 2;
-                            ctx.beginPath();
-                            ctx.arc(SIZE/2, SIZE/2, SIZE/2, 0, Math.PI * 2);
-                            ctx.closePath();
-                            ctx.clip();
-                            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, SIZE, SIZE);
-                            resolve(canvas.toDataURL('image/png', 0.9));
+                            ctx.drawImage(img, 0, 0, width, height);
+                            resolve(canvas.toDataURL('image/jpeg', 0.8));
                         } catch (err) { reject(err.message); }
                     };
                     img.onerror = () => reject("Impossibile leggere il file immagine");
@@ -188,144 +177,76 @@
             });
         };
 
-        const Dashboard = ({ races, username }) => {
-          const completed = races.filter(r => r.completed);
-          const pbList = getPBs(races);
-          return (
-            <div className="p-4 space-y-8 pt-10">
-              <div><h1 className="text-4xl font-black text-white mt-4">{username ? `Ciao, ${username}!` : 'Dashboard'}</h1></div>
-              <div className="flex justify-center gap-6 mt-4">
-                <GlassCard className="w-36 h-36 rounded-[2.5rem] flex flex-col items-center justify-center p-2 text-center">
-                  <div className="flex justify-center mb-1 text-sky-200"><Icons.Running /></div>
-                  <p className="text-5xl font-extrabold mt-1">{completed.length}</p>
-                  <p className="text-[10px] uppercase text-white/70 font-bold tracking-widest mt-1">Gare Fatte</p>
-                </GlassCard>
-                <GlassCard className="w-36 h-36 rounded-[2.5rem] flex flex-col items-center justify-center p-2 text-center">
-                  <div className="flex justify-center mb-1 text-amber-200"><Icons.Medal /></div>
-                  <p className="text-5xl font-extrabold mt-1">{completed.filter(r => r.medal).length}</p>
-                  <p className="text-[10px] uppercase text-white/70 font-bold tracking-widest mt-1">Medaglie</p>
-                </GlassCard>
-              </div>
-              <div className="pt-4">
-                <h3 className="text-2xl font-bold mb-5 flex items-center gap-2 text-white"><Icons.Star /> Personal Bests</h3>
-                {pbList.length === 0 && <p className="text-white/50 text-center italic">Nessuna gara registrata.</p>}
-                <div className="space-y-4">
-                  {pbList.map(pb => (
-                    <GlassCard key={`pb-${pb.id}`} className="rounded-3xl flex justify-between items-center p-5 border-l-4 border-l-amber-400 bg-white/10">
-                      <div>
-                        <p className="text-xl font-black text-white">{pb.type}</p>
-                        <p className="text-sm text-white/70 mt-1">{pb.event} • {pb.date}</p>
-                      </div>
-                      <div className="text-right"><p className="text-2xl font-black text-amber-300 drop-shadow-md">{pb.time}</p></div>
-                    </GlassCard>
-                  ))}
+        const getExpiryStatus = (dateStr) => {
+            if (!dateStr) return { color: 'text-white/70', status: 'N/A' };
+            const expiry = new Date(dateStr);
+            const now = new Date();
+            now.setHours(0,0,0,0);
+            const diffTime = expiry - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) return { color: 'text-rose-400 font-bold', status: 'Scaduto' };
+            if (diffDays <= 30) return { color: 'text-amber-400 font-bold', status: 'In scadenza' };
+            return { color: 'text-emerald-400 font-medium', status: 'Valido' };
+        };
+
+        const Cassettiera = ({ documents, username, onDocClick }) => {
+            const groupedDocs = useMemo(() => {
+                const groups = {};
+                documents.forEach(doc => {
+                    if (!groups[doc.category]) groups[doc.category] = [];
+                    groups[doc.category].push(doc);
+                });
+                return groups;
+            }, [documents]);
+
+            return (
+                <div className="p-4 space-y-6 pt-10">
+                    <div>
+                        <h1 className="text-4xl font-black text-white mt-4">{username ? `Ciao, ${username}` : 'Archivio'}</h1>
+                        <p className="text-white/70 mt-1 text-sm">I tuoi documenti e scadenze.</p>
+                    </div>
+
+                    <div className="pt-4 space-y-6">
+                        {Object.keys(groupedDocs).length === 0 && (
+                            <p className="text-white/50 text-center italic mt-10">Nessun documento. Clicca il tasto + per iniziare.</p>
+                        )}
+                        {Object.entries(groupedDocs).map(([category, items]) => (
+                            <GlassCard key={category} className="rounded-3xl p-5 border-t-2 border-t-white/40">
+                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
+                                    <Icons.Folder /> {category}
+                                </h3>
+                                <div className="space-y-3">
+                                    {items.map(doc => {
+                                        const expiry = getExpiryStatus(doc.scadenza);
+                                        return (
+                                            <div key={doc.id} onClick={() => onDocClick(doc)} className="bg-white/10 rounded-2xl p-3 flex justify-between items-center hover:bg-white/20 transition cursor-pointer border border-white/5">
+                                                <div className="flex items-center gap-3 overflow-hidden">
+                                                    {doc.photo ? (
+                                                        <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-white/20 overflow-hidden shadow-inner bg-black/20">
+                                                            <img src={doc.photo} className="w-full h-full object-cover" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-white/10 bg-white/5 flex items-center justify-center text-white/50">
+                                                            <Icons.File />
+                                                        </div>
+                                                    )}
+                                                    <div className="min-w-0">
+                                                        <p className="text-base font-bold text-white truncate">{doc.name}</p>
+                                                        <p className={`text-xs mt-0.5 truncate ${expiry.color}`}>
+                                                            Scad: {doc.scadenza ? new Date(doc.scadenza).toLocaleDateString('it-IT') : 'Nessuna'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </GlassCard>
+                        ))}
+                    </div>
                 </div>
-              </div>
-            </div>
-          );
-        };
-
-        const Storico = ({ races, onRaceClick }) => {
-          const [filter, setFilter] = useState('Tutti');
-          const completed = races.filter(r => r.completed);
-          
-          const standardOrder = ['10k', 'Mezza Maratona', 'Maratona', 'Hyrox'];
-          const existingTypes = standardOrder.filter(type => completed.some(r => r.type === type));
-          const availableFilters = ['Tutti', ...existingTypes];
-
-          useEffect(() => {
-              if (filter !== 'Tutti' && !existingTypes.includes(filter)) setFilter('Tutti');
-          }, [races, filter, existingTypes]);
-
-          const filteredRaces = completed.filter(r => filter === 'Tutti' || r.type === filter);
-          const pbIds = getPBs(races).map(r => r.id);
-
-          return (
-            <div className="p-4 space-y-6 pt-10">
-              <div className="mt-4"><h1 className="text-4xl font-black text-white">Storico</h1></div>
-              <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                  {availableFilters.map(t => (
-                      <GlassButton key={t} onClick={() => setFilter(t)} className={`rounded-full px-5 py-2 text-sm font-semibold whitespace-nowrap ${filter === t ? 'bg-sky-500 text-white' : 'text-sky-100'}`}>{t}</GlassButton>
-                  ))}
-              </div>
-              <div className="space-y-4 pt-2">
-                {filteredRaces.length === 0 && <p className="text-white/50 text-center mt-10">Nessuna gara registrata.</p>}
-                {filteredRaces.map(race => (
-                  <GlassCard key={race.id} onClick={() => onRaceClick(race)} className="rounded-3xl flex justify-between items-center p-4 gap-2 cursor-pointer hover:bg-white/30 transition-colors">
-                    <div className="flex-1">
-                      <p className="text-lg font-bold">{race.event}</p>
-                      <p className="text-xs text-white/70">{race.date} • <span className="text-sky-200 font-semibold">{race.type}</span></p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {pbIds.includes(race.id) && (<div className="flex items-center gap-1 bg-amber-500/20 text-amber-300 px-2 py-1 rounded-md border border-amber-500/30"><Icons.Star /><span className="text-xs font-bold">PB</span></div>)}
-                      <p className="text-xl font-black">{race.time}</p>
-                      {race.medal ? (<div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden shadow-lg ml-1 flex-shrink-0"><img src={race.medal} className="w-full h-full object-cover" /></div>) 
-                      : (<div className="w-12 h-12 rounded-full border-2 border-white/10 bg-white/5 ml-1 flex-shrink-0"></div>)}
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-            </div>
-          );
-        };
-
-        const Medals = ({ races, onProcessMedalRequest, onUpdateMedal, selectedMedal, setSelectedMedal }) => {
-          const medaled = races.filter(r => r.medal);
-          const getPosition = (index) => {
-              const pos = [
-                  { x: 0, y: 0, size: 'w-32 h-32' }, { x: -110, y: -70, size: 'w-24 h-24' }, { x: 110, y: -70, size: 'w-28 h-28' },         
-                  { x: -110, y: 70, size: 'w-28 h-28' }, { x: 110, y: 70, size: 'w-24 h-24' }, { x: 0, y: -140, size: 'w-20 h-20' }, { x: 0, y: 140, size: 'w-24 h-24' },           
-              ];
-              return pos[index] || { x: Math.cos(index) * 180, y: Math.sin(index) * 180, size: 'w-20 h-20' };
-          };
-          const handleUpdateMedalClick = (e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              onProcessMedalRequest(file, (processedBase64) => {
-                  onUpdateMedal(selectedMedal.id, processedBase64);
-                  setSelectedMedal(prev => ({...prev, medal: processedBase64})); 
-              });
-          };
-
-          return (
-            <div className="relative w-full h-[calc(100vh-120px)]">
-              <div className="absolute top-14 left-4 z-20 pointer-events-none"><h1 className="text-4xl font-black text-white drop-shadow-lg">Medagliere</h1></div>
-              {medaled.length === 0 && <div className="absolute inset-0 flex items-center justify-center text-white/50 text-center p-4">Scatta la foto alla medaglia quando aggiungi una gara per vederla qui!</div>}
-              
-              <div className="w-full h-full overflow-auto no-scrollbar touch-pan-x touch-pan-y relative flex items-center justify-center">
-                  <div className="relative w-[600px] h-[600px] flex-shrink-0 flex items-center justify-center">
-                      {medaled.map((race, i) => {
-                          const pos = getPosition(i);
-                          return (
-                              <div key={race.id} onClick={() => setSelectedMedal(race)} className={`absolute cursor-pointer transition-transform duration-300 hover:scale-110 hover:z-30 rounded-full border-[3px] border-white/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md bg-white/10 p-1 flex items-center justify-center ${pos.size}`} style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}>
-                                  <img src={race.medal} className="w-full h-full object-cover rounded-full pointer-events-none shadow-[inset_0_4px_10px_rgba(0,0,0,0.7)]" />
-                              </div>
-                          );
-                      })}
-                  </div>
-              </div>
-
-              {selectedMedal && (
-                  <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[50] flex items-center justify-center p-4" onClick={() => setSelectedMedal(null)}>
-                      <GlassCard className="rounded-3xl w-full max-w-sm flex flex-col items-center relative text-center border-white/20 p-8" onClick={e => e.stopPropagation()}>
-                          <button onClick={() => setSelectedMedal(null)} className="absolute top-4 right-4 text-white/50 hover:text-white"><Icons.X /></button>
-                          <div className="w-56 h-56 rounded-full border-4 border-amber-300/50 p-2 shadow-[0_0_60px_rgba(251,191,36,0.2)] bg-white/5 mb-6 relative">
-                              <img src={selectedMedal.medal} className="w-full h-full object-cover rounded-full" />
-                          </div>
-                          <h2 className="text-3xl font-black text-white">{selectedMedal.event}</h2>
-                          <p className="text-lg text-sky-200/80 font-medium mt-1">{selectedMedal.date}</p>
-                          <div className="mt-6 w-full bg-white/5 rounded-2xl p-4 border border-white/10 shadow-inner mb-4">
-                              <p className="text-xs uppercase text-white/50 font-bold tracking-widest mb-1">Tempo Ufficiale</p>
-                              <p className="text-4xl font-black text-amber-300 drop-shadow-md">{selectedMedal.time}</p>
-                          </div>
-                          <label className="flex items-center justify-center gap-2 w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-full cursor-pointer transition-colors">
-                              <Icons.Refresh /> Aggiorna Foto <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleUpdateMedalClick} />
-                          </label>
-                      </GlassCard>
-                  </div>
-              )}
-            </div>
-          );
+            );
         };
 
         const Impostazioni = ({ username, saveUsername }) => {
@@ -337,9 +258,9 @@
                       <p className="text-sky-200 text-xs font-bold mb-3 uppercase tracking-wider">Il Tuo Profilo</p>
                       <div className="flex gap-2">
                         <GlassInput value={tempName} onChange={(e) => setTempName(e.target.value)} placeholder="Il tuo nome..." className="text-md" />
-                        <GlassButton onClick={() => {if(tempName) saveUsername(tempName)}} className="px-6 bg-sky-500">Salva</GlassButton>
+                        <GlassButton onClick={() => {if(tempName) saveUsername(tempName)}} className="px-6 bg-sky-500 font-bold">Salva</GlassButton>
                       </div>
-                      <button onClick={() => auth.signOut()} className="w-full py-3 mt-8 bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/50 text-rose-300 font-bold rounded-full transition-colors">Disconnettiti</button>
+                      <button onClick={() => auth.signOut()} className="w-full py-4 mt-8 bg-rose-500/20 hover:bg-rose-500/40 border border-rose-500/50 text-rose-300 font-bold rounded-2xl transition-colors">Disconnettiti</button>
                   </GlassCard>
               </div>
             );
@@ -365,7 +286,7 @@
 
             return (
                 <div className="min-h-screen flex items-center justify-center p-4 z-10 relative">
-                    <GlassCard className="rounded-3xl w-full max-w-sm text-center p-8 space-y-6">
+                    <GlassCard className="rounded-3xl w-full max-w-sm text-center p-8 space-y-6 border-t-2 border-t-white/40">
                         <div className="flex justify-center text-sky-300"><Icons.Lock /></div>
                         <h2 className="text-2xl font-black text-white">{isLogin ? 'Bentornato' : 'Registrati'}</h2>
                         <div className="space-y-3">
@@ -373,8 +294,8 @@
                             <GlassInput value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" />
                             <GlassInput value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" type="password" />
                         </div>
-                        <GlassButton onClick={handleAuth} className="w-full py-3 bg-sky-500 font-bold">{isLogin ? 'Accedi' : 'Crea Account'}</GlassButton>
-                        <p className="text-xs text-white/50 pt-2 cursor-pointer hover:text-white" onClick={() => setIsLogin(!isLogin)}>
+                        <GlassButton onClick={handleAuth} className="w-full py-3 bg-sky-500 font-bold border-sky-400">{isLogin ? 'Accedi' : 'Crea Account'}</GlassButton>
+                        <p className="text-xs text-white/50 pt-2 cursor-pointer hover:text-white transition-colors" onClick={() => setIsLogin(!isLogin)}>
                             {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Accedi"}
                         </p>
                     </GlassCard>
@@ -382,241 +303,245 @@
             )
         };
 
-        const PreprocessModal = ({ imageBase64, onConfirm, onCancel }) => (
-            <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[60] flex items-center justify-center p-4">
-                <div className="w-full max-w-sm flex flex-col items-center text-center">
-                    <h2 className="text-2xl font-black text-white mb-2">Isolamento Medaglia</h2>
-                    <p className="text-sm text-white/60 mb-8">Abbiamo ritagliato il soggetto al centro.</p>
-                    <div className="w-64 h-64 rounded-full border-2 border-white/20 medal-preview-bg shadow-[0_0_50px_rgba(255,255,255,0.1)] p-2 mb-10">
-                        <img src={imageBase64} className="w-full h-full object-cover rounded-full" />
-                    </div>
-                    <p className="text-lg font-bold text-white mb-6">Confermi questo risultato?</p>
-                    <div className="flex gap-4 w-full">
-                        <button onClick={onCancel} className="flex-1 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-full transition-colors">Riprova</button>
-                        <button onClick={() => onConfirm(imageBase64)} className="flex-1 py-3 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-full shadow-lg shadow-sky-500/30 transition-colors">Conferma</button>
-                    </div>
-                </div>
-            </div>
-        );
-
         function App() {
-          const [user, setUser] = useState(null);
-          const [username, setUsername] = useState('');
-          const [activeTab, setActiveTab] = useState('dashboard');
-          const [isAddOpen, setIsAddOpen] = useState(false);
-          const [races, setRaces] = useState([]);
-          const [loading, setLoading] = useState(false);
-          
-          const [newRace, setNewRace] = useState({ type: '10k', event: '', date: '', time: '' });
-          const [medalProcessed, setMedalProcessed] = useState(null);
-          
-          const [raceToDelete, setRaceToDelete] = useState(null);
-          const [selectedMedal, setSelectedMedal] = useState(null); 
-          
-          const [processState, setProcessState] = useState({ isOpen: false, base64: null, onConfirmCallback: null, isProcessing: false });
+            const [user, setUser] = useState(null);
+            const [username, setUsername] = useState('');
+            const [activeTab, setActiveTab] = useState('home');
+            const [isAddOpen, setIsAddOpen] = useState(false);
+            const [documents, setDocuments] = useState([]);
+            const [loading, setLoading] = useState(false);
+            
+            const [newDoc, setNewDoc] = useState({ name: 'Patente di guida', dataSvolgimento: '', scadenza: '' });
+            const [photoProcessed, setPhotoProcessed] = useState(null);
+            
+            const [selectedDoc, setSelectedDoc] = useState(null); 
+            const [isProcessing, setIsProcessing] = useState(false);
 
-          useEffect(() => {
-              if (firebaseConfig.apiKey === "INCOLLA_QUI") return;
-              const unsubscribe = auth.onAuthStateChanged(u => {
-                  setUser(u);
-                  if (u) {
-                      db.collection("settings").doc(u.uid).get().then(doc => { if(doc.exists) setUsername(doc.data().name); });
-                  }
-              });
-              return () => unsubscribe();
-          }, []);
+            useEffect(() => {
+                if (firebaseConfig.apiKey === "INCOLLA_QUI") return;
+                const unsubscribe = auth.onAuthStateChanged(u => {
+                    setUser(u);
+                    if (u) {
+                        db.collection("settings").doc(u.uid).get().then(doc => { if(doc.exists) setUsername(doc.data().name); });
+                    }
+                });
+                return () => unsubscribe();
+            }, []);
 
-          useEffect(() => {
-              if (!user) return;
-              setLoading(true);
-              const unsubscribe = db.collection("races").where("userId", "==", user.uid).onSnapshot((snapshot) => {
-                  const racesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                  racesData.sort((a,b) => new Date(b.date) - new Date(a.date)); 
-                  setRaces(racesData);
-                  setLoading(false);
-              });
-              return () => unsubscribe();
-          }, [user]);
+            useEffect(() => {
+                if (!user) return;
+                setLoading(true);
+                const unsubscribe = db.collection("user_documents")
+                                      .where("userId", "==", user.uid)
+                                      .onSnapshot((snapshot) => {
+                    const docsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Sort by scadenza (soonest first)
+                    docsData.sort((a,b) => new Date(a.scadenza) - new Date(b.scadenza)); 
+                    setDocuments(docsData);
+                    setLoading(false);
+                });
+                return () => unsubscribe();
+            }, [user]);
 
-          const saveUsername = (newName) => { db.collection("settings").doc(user.uid).set({ name: newName }); setUsername(newName); };
+            const saveUsername = (newName) => { db.collection("settings").doc(user.uid).set({ name: newName }); setUsername(newName); };
 
-          const handlePhotoSelection = async (file, onConfirmCallback) => {
-              if (!file) return;
-              try {
-                  setProcessState({ isOpen: false, base64: null, onConfirmCallback: null, isProcessing: true });
-                  const processedBase64 = await isolateMedal(file);
-                  setProcessState({ isOpen: true, base64: processedBase64, onConfirmCallback, isProcessing: false });
-              } catch (e) { alert("Errore: " + e); setProcessState({ isOpen: false, base64: null, onConfirmCallback: null, isProcessing: false }); }
-          };
+            const handlePhotoSelection = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                try {
+                    setIsProcessing(true);
+                    const processedBase64 = await compressImage(file);
+                    setPhotoProcessed(processedBase64);
+                } catch (err) {
+                    alert("Errore: " + err);
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
 
-          // FUNZIONE DI FORMATTAZIONE AUTOMATICA DEL TEMPO (HH:MM:SS)
-          const handleTimeChange = (e) => {
-              // Rimuovi tutto ciò che non è un numero
-              let val = e.target.value.replace(/\D/g, '');
-              
-              // Limita a 6 numeri totali (hhmmss)
-              if (val.length > 6) val = val.slice(0, 6);
-              
-              // Aggiungi i due punti in automatico
-              let formatted = val;
-              if (val.length > 4) {
-                  formatted = `${val.slice(0, 2)}:${val.slice(2, 4)}:${val.slice(4)}`;
-              } else if (val.length > 2) {
-                  formatted = `${val.slice(0, 2)}:${val.slice(2)}`;
-              }
-              
-              setNewRace({...newRace, time: formatted});
-          };
+            const handleSaveNewDoc = () => {
+                if (!newDoc.name || !newDoc.scadenza) return alert("Inserisci Nome e Scadenza!");
+                const category = ACTIVITIES_MAP[newDoc.name] || 'Varie';
+                
+                const docToAdd = {
+                    userId: user.uid, 
+                    name: newDoc.name, 
+                    category: category,
+                    dataSvolgimento: newDoc.dataSvolgimento, 
+                    scadenza: newDoc.scadenza,
+                    photo: photoProcessed 
+                };
+                
+                db.collection("user_documents").add(docToAdd).then(() => {
+                    setIsAddOpen(false); 
+                    setNewDoc({ name: 'Patente di guida', dataSvolgimento: '', scadenza: '' }); 
+                    setPhotoProcessed(null);
+                }).catch(err => alert("Errore: " + err.message));
+            };
 
-          const handleSaveNewRace = () => {
-              if (!newRace.event || !newRace.time) return alert("Inserisci Evento e Tempo!");
-              const raceToAdd = {
-                  userId: user.uid, type: newRace.type, event: newRace.event, date: newRace.date,
-                  time: newRace.time, completed: true, medal: medalProcessed 
-              };
-              db.collection("races").add(raceToAdd).then(() => {
-                  setIsAddOpen(false); setNewRace({ type: '10k', event: '', date: '', time: '' }); setMedalProcessed(null);
-              }).catch(err => alert("Errore: " + err.message));
-          };
+            const confirmDeleteDoc = () => {
+                if (!selectedDoc) return;
+                db.collection("user_documents").doc(selectedDoc.id).delete().then(() => setSelectedDoc(null)).catch(err => alert("Errore: " + err.message));
+            };
 
-          const confirmDeleteRace = () => {
-              if (!raceToDelete) return;
-              db.collection("races").doc(raceToDelete.id).delete().then(() => setRaceToDelete(null)).catch(err => alert("Errore: " + err.message));
-          };
+            if (!user) {
+                return (
+                  <div className="relative">
+                      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
+                      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-magenta-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
+                      <AuthScreen />
+                  </div>
+                );
+            }
 
-          const updateMedalInDb = (raceId, newBase64) => { db.collection("races").doc(raceId).update({ medal: newBase64 }).catch(err => alert("Errore: " + err.message)); };
+            const isAnyModalOpen = isAddOpen || selectedDoc || isProcessing;
 
-          const navItemsLeft = [{ id: 'dashboard', icon: Icons.Home }, { id: 'storico', icon: Icons.History }];
-          const navItemsRight = [{ id: 'medals', icon: Icons.Medal }, { id: 'impostazioni', icon: Icons.Settings }];
-
-          if (!user) {
-              return (
-                <div className="relative">
-                    <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
-                    <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-magenta-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
-                    <AuthScreen />
+            return (
+              <div className="relative min-h-screen">
+                <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
+                <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-magenta-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
+                
+                <div className="max-w-xl mx-auto pb-32 relative z-10 pt-safe">
+                  {loading && <div className="text-center mt-20 text-white/50 font-medium">Caricamento archivio...</div>}
+                  {!loading && activeTab === 'home' && <Cassettiera documents={documents} username={username} onDocClick={setSelectedDoc} />}
+                  {!loading && activeTab === 'settings' && <Impostazioni username={username} saveUsername={saveUsername} />}
                 </div>
-              );
-          }
 
-          const isAnyModalOpen = isAddOpen || raceToDelete || selectedMedal || processState.isOpen || processState.isProcessing;
+                {/* NAVBAR EXACT 3 ITEMS */}
+                {!isAnyModalOpen && (
+                    <div className="fixed bottom-6 pb-safe left-0 right-0 flex justify-center z-40 px-4 pointer-events-none">
+                      <div className="bg-black/60 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex items-center justify-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-auto mx-auto w-max px-4">
+                        <button onClick={() => setActiveTab('home')} className={`flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'home' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white'}`}>
+                            <Icons.Home />
+                        </button>
+                        
+                        <button onClick={() => setIsAddOpen(true)} className="w-16 h-16 bg-gradient-to-tr from-sky-600 to-sky-400 rounded-full flex flex-shrink-0 items-center justify-center text-white shadow-[0_4px_15px_rgba(14,165,233,0.5)] hover:scale-105 transition-transform mx-2">
+                            <Icons.Plus />
+                        </button>
+                        
+                        <button onClick={() => setActiveTab('settings')} className={`flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${activeTab === 'settings' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white'}`}>
+                            <Icons.Settings />
+                        </button>
+                      </div>
+                    </div>
+                )}
 
-          return (
-            <div className="relative min-h-screen">
-              <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
-              <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-magenta-500/30 rounded-full blur-[120px] pointer-events-none z-0"></div>
-              
-              <div className="max-w-xl mx-auto pb-32 relative z-10 pt-safe">
-                {loading && <div className="text-center mt-20 text-white/50">Caricamento dati...</div>}
-                {!loading && activeTab === 'dashboard' && <Dashboard races={races} username={username} />}
-                {!loading && activeTab === 'storico' && <Storico races={races} onRaceClick={setRaceToDelete} />}
-                {!loading && activeTab === 'medals' && <Medals races={races} onProcessMedalRequest={handlePhotoSelection} onUpdateMedal={updateMedalInDb} selectedMedal={selectedMedal} setSelectedMedal={setSelectedMedal} />}
-                {!loading && activeTab === 'impostazioni' && <Impostazioni username={username} saveUsername={saveUsername} />}
+                {/* MODAL: PROCESSING SPINNER */}
+                {isProcessing && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[70] flex flex-col items-center justify-center p-4">
+                        <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <h2 className="text-xl font-bold text-white">Elaborazione Foto...</h2>
+                    </div>
+                )}
+
+                {/* MODAL: VIEW DETAILS / DELETE */}
+                {selectedDoc && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[50] flex items-center justify-center p-4" onClick={() => setSelectedDoc(null)}>
+                        <GlassCard className="rounded-3xl w-full max-w-sm relative text-center border-white/20 p-8 max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                            <button onClick={() => setSelectedDoc(null)} className="absolute top-4 right-4 text-white/50 hover:text-white bg-black/20 rounded-full p-1"><Icons.X /></button>
+                            
+                            <div className="flex-1 overflow-y-auto no-scrollbar pb-6">
+                                <h2 className="text-3xl font-black text-white mb-2 leading-tight">{selectedDoc.name}</h2>
+                                <p className="text-white/70 font-bold mb-4 uppercase tracking-widest text-xs">{selectedDoc.category}</p>
+                                
+                                <div className="grid grid-cols-2 gap-3 mb-6 text-left">
+                                    <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                        <p className="text-[10px] uppercase text-white/50 font-bold">Data Svolg.</p>
+                                        <p className="font-semibold text-white mt-1">{selectedDoc.dataSvolgimento ? new Date(selectedDoc.dataSvolgimento).toLocaleDateString('it-IT') : '-'}</p>
+                                    </div>
+                                    <div className={`bg-white/5 rounded-2xl p-4 border border-white/10 ${getExpiryStatus(selectedDoc.scadenza).color.includes('rose') ? 'border-rose-500/50 bg-rose-500/10' : ''}`}>
+                                        <p className="text-[10px] uppercase text-white/50 font-bold">Scadenza</p>
+                                        <p className={`font-semibold mt-1 ${getExpiryStatus(selectedDoc.scadenza).color}`}>{selectedDoc.scadenza ? new Date(selectedDoc.scadenza).toLocaleDateString('it-IT') : '-'}</p>
+                                    </div>
+                                </div>
+
+                                {selectedDoc.photo ? (
+                                    <div className="w-full rounded-2xl border-4 border-white/10 overflow-hidden bg-black/20 shadow-xl">
+                                        <img src={selectedDoc.photo} className="w-full h-auto object-contain" />
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-32 rounded-2xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-white/30 bg-white/5">
+                                        <Icons.File />
+                                        <span className="text-sm mt-2">Nessuna foto</span>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <div className="pt-4 mt-auto border-t border-white/10">
+                                <button onClick={confirmDeleteDoc} className="w-full py-4 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl transition-colors shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2">
+                                    <Icons.Trash /> Elimina Documento
+                                </button>
+                            </div>
+                        </GlassCard>
+                    </div>
+                )}
+
+                {/* MODAL: ADD DOCUMENT */}
+                {isAddOpen && (
+                  <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[45] flex items-center justify-center p-4 pt-10">
+                    <GlassCard className="rounded-3xl w-full max-w-sm relative p-8 max-h-[85vh] overflow-y-auto no-scrollbar border-t-2 border-t-white/40">
+                      <button onClick={() => { setIsAddOpen(false); setPhotoProcessed(null); }} className="absolute top-4 right-4 text-white/50 hover:text-white bg-black/20 rounded-full p-1"><Icons.X /></button>
+                      <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">Nuova Registrazione</h2>
+                      
+                      <div className="space-y-4">
+                        <div>
+                            <label className="text-xs font-bold text-sky-200 uppercase tracking-wider mb-2 block">Attività / Documento</label>
+                            <select value={newDoc.name} onChange={(e) => setNewDoc({...newDoc, name: e.target.value})} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white focus:ring-2 focus:ring-sky-200 outline-none w-full box-border min-w-0 m-0 appearance-none font-semibold">
+                                <optgroup label="Documenti" className="text-black">
+                                    <option className="text-black">Patente di guida</option>
+                                    <option className="text-black">Carta d'Identità</option>
+                                    <option className="text-black">Passaporto</option>
+                                </optgroup>
+                                <optgroup label="Salute" className="text-black">
+                                    <option className="text-black">Visita Medica Sportiva</option>
+                                    <option className="text-black">Pulizia dei denti</option>
+                                </optgroup>
+                                <optgroup label="Veicoli" className="text-black">
+                                    <option className="text-black">Bollo Auto</option>
+                                    <option className="text-black">Assicurazione Auto</option>
+                                    <option className="text-black">Revisione Auto</option>
+                                </optgroup>
+                                <optgroup label="Varie" className="text-black">
+                                    <option className="text-black">Altro</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="text-[10px] font-bold text-white/60 uppercase tracking-wider mb-1 block">Data Svolgimento</label>
+                                <GlassDateInput placeholder="Data Svolgimento" value={newDoc.dataSvolgimento} onChange={(e) => setNewDoc({...newDoc, dataSvolgimento: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-rose-300 uppercase tracking-wider mb-1 block">Scadenza *</label>
+                                <GlassDateInput placeholder="Scadenza" value={newDoc.scadenza} onChange={(e) => setNewDoc({...newDoc, scadenza: e.target.value})} />
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label className="text-xs font-bold text-sky-200 uppercase tracking-wider mb-2 block mt-2">Allega Foto (Opzionale)</label>
+                            <label className={`flex items-center justify-center w-full p-4 bg-white/5 backdrop-blur-md border border-dashed rounded-2xl cursor-pointer hover:bg-white/10 transition-all font-medium box-border m-0 ${photoProcessed ? 'border-sky-400 text-sky-300 bg-sky-500/10' : 'border-white/30 text-white/80'}`}>
+                                <Icons.Camera />
+                                <span className="ml-2 truncate max-w-[200px]">{photoProcessed ? "Foto Pronta!" : "Scatta / Scegli foto"}</span>
+                                <input type="file" accept="image/*" className="hidden" onChange={handlePhotoSelection} />
+                            </label>
+
+                            {photoProcessed && (
+                                <div className="mt-3 w-full h-32 rounded-xl overflow-hidden border border-white/20 bg-black/40">
+                                    <img src={photoProcessed} className="w-full h-full object-cover" />
+                                </div>
+                            )}
+                        </div>
+
+                        <GlassButton onClick={handleSaveNewDoc} className="rounded-2xl w-full py-4 bg-sky-500 border-sky-400 mt-6 font-bold tracking-wide shadow-lg shadow-sky-500/20 text-lg">
+                          <Icons.Save /> Salva nel cassetto
+                        </GlassButton>
+                      </div>
+                    </GlassCard>
+                  </div>
+                )}
               </div>
-
-              {!isAnyModalOpen && (
-                  <div className="fixed bottom-6 pb-safe left-0 right-0 flex justify-center z-40 px-4 pointer-events-none">
-                    <div className="bg-black/60 backdrop-blur-2xl border border-white/10 rounded-full p-2 flex items-center justify-center gap-2 sm:gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-auto mx-auto w-max px-3 sm:px-4">
-                      {navItemsLeft.map(item => (
-                        <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${activeTab === item.id ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white'}`}><item.icon /></button>
-                      ))}
-                      <button onClick={() => setIsAddOpen(true)} className="w-14 h-14 bg-gradient-to-tr from-sky-600 to-sky-400 rounded-full flex flex-shrink-0 items-center justify-center text-white shadow-[0_4px_15px_rgba(14,165,233,0.5)] hover:scale-105 transition-transform"><Icons.Plus /></button>
-                      {navItemsRight.map(item => (
-                        <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${activeTab === item.id ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white'}`}><item.icon /></button>
-                      ))}
-                    </div>
-                  </div>
-              )}
-
-              {processState.isProcessing && (
-                  <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[70] flex flex-col items-center justify-center p-4">
-                      <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                      <h2 className="text-xl font-bold text-white">Ritagliando la medaglia...</h2>
-                      <p className="text-white/60 text-sm mt-2">Potrebbe volerci qualche secondo</p>
-                  </div>
-              )}
-
-              {processState.isOpen && (
-                  <PreprocessModal 
-                      imageBase64={processState.base64} 
-                      onConfirm={(b64) => {
-                          processState.onConfirmCallback(b64);
-                          setProcessState({ isOpen: false, base64: null, onConfirmCallback: null, isProcessing: false });
-                      }} 
-                      onCancel={() => setProcessState({ isOpen: false, base64: null, onConfirmCallback: null, isProcessing: false })} 
-                  />
-              )}
-
-              {raceToDelete && (
-                  <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[50] flex items-center justify-center p-4" onClick={() => setRaceToDelete(null)}>
-                      <GlassCard className="rounded-3xl w-full max-w-sm relative text-center border-white/20 p-8" onClick={e => e.stopPropagation()}>
-                          <button onClick={() => setRaceToDelete(null)} className="absolute top-4 right-4 text-white/50 hover:text-white"><Icons.X /></button>
-                          <div className="flex justify-center mb-4 text-rose-400"><Icons.Trash /></div>
-                          <h2 className="text-2xl font-black text-white mb-2">{raceToDelete.event}</h2>
-                          <p className="text-white/70 font-medium mb-1">{raceToDelete.type}</p>
-                          <p className="text-white/50 text-sm mb-6">{raceToDelete.date} • {raceToDelete.time}</p>
-                          <button onClick={confirmDeleteRace} className="w-full py-3 bg-rose-500/90 hover:bg-rose-500 border border-rose-400 text-white font-bold rounded-full transition-colors shadow-lg shadow-rose-500/30">Elimina Gara</button>
-                      </GlassCard>
-                  </div>
-              )}
-
-              {isAddOpen && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[45] flex items-center justify-center p-4 pt-10">
-                  <GlassCard className="rounded-3xl w-full max-w-sm relative p-8 max-h-[85vh] overflow-y-auto no-scrollbar">
-                    <button onClick={() => { setIsAddOpen(false); setMedalProcessed(null); }} className="absolute top-4 right-4 text-white/50 hover:text-white"><Icons.X /></button>
-                    <h2 className="text-2xl font-bold mb-6">Nuova Gara</h2>
-                    <div className="space-y-4">
-                      
-                      <select value={newRace.type} onChange={(e) => setNewRace({...newRace, type: e.target.value})} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white focus:ring-2 focus:ring-sky-200 outline-none w-full box-border min-w-0 m-0 appearance-none">
-                         <option className="text-black">10k</option><option className="text-black">Mezza Maratona</option><option className="text-black">Maratona</option><option className="text-black">Hyrox</option>
-                      </select>
-                      
-                      <GlassInput placeholder="Nome Evento (es. Milano Run)" value={newRace.event} onChange={(e) => setNewRace({...newRace, event: e.target.value})} />
-                      
-                      <GlassDateInput 
-                          placeholder="Data Evento" 
-                          value={newRace.date} 
-                          onChange={(e) => setNewRace({...newRace, date: e.target.value})} 
-                      />
-                      
-                      {/* NUOVO INPUT TEMPO FORMATTATO (Solo Numeri) */}
-                      <GlassInput 
-                          placeholder="Tempo (es. 01:45:00)" 
-                          value={newRace.time} 
-                          onChange={handleTimeChange} 
-                          inputMode="numeric"
-                          maxLength="8"
-                      />
-                      
-                      <label className={`flex items-center justify-center w-full p-3 bg-white/10 backdrop-blur-md border rounded-xl cursor-pointer hover:bg-white/20 transition-all font-medium box-border m-0 ${medalProcessed ? 'border-amber-400 text-amber-300' : 'border-white/20 text-white/80'}`}>
-                          <Icons.Camera />
-                          <span className="ml-2 truncate max-w-[200px]">{medalProcessed ? "Medaglia Pronta!" : "Scatta foto alla Medaglia"}</span>
-                          <input type="file" accept="image/*" capture="environment" className="hidden" 
-                            onChange={(e) => {
-                                const f = e.target.files[0];
-                                if(f) handlePhotoSelection(f, (b64) => setMedalProcessed(b64));
-                                e.target.value = null; 
-                            }} 
-                          />
-                      </label>
-
-                      {medalProcessed && (
-                          <div className="flex justify-center mt-2">
-                             <div className="w-16 h-16 rounded-full border-2 border-amber-400 p-1 bg-white/10 medal-preview-bg">
-                                <img src={medalProcessed} className="w-full h-full rounded-full" />
-                             </div>
-                          </div>
-                      )}
-
-                      <GlassButton onClick={handleSaveNewRace} className="rounded-full w-full py-3 bg-sky-500 border-sky-400 mt-4 font-bold tracking-wide">
-                        <Icons.Save /> Salva Risultato
-                      </GlassButton>
-                    </div>
-                  </GlassCard>
-                </div>
-              )}
-            </div>
-          );
+            );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
