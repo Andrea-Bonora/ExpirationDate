@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MyDocs</title>
+    <title>ExpirationDate</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MyDocs">
+    <meta name="apple-mobile-web-app-title" content="ExpirationDate">
 
     <script>
       // Generazione dinamica dell'icona pixel-art "Cassettiera"
@@ -26,13 +26,9 @@
           
           // Cassetti
           const drawDrawer = (y) => {
-              // Bordo/Ombra interna
               ctx.fillStyle = '#334155'; ctx.fillRect(35, y, 110, 32);
-              // Frontale cassetto
               ctx.fillStyle = '#94a3b8'; ctx.fillRect(37, y+2, 106, 28);
-              // Maniglia
               ctx.fillStyle = '#1e293b'; ctx.fillRect(80, y + 12, 20, 6);
-              // Etichetta
               ctx.fillStyle = '#f8fafc'; ctx.fillRect(45, y + 10, 18, 10);
           }
           
@@ -64,6 +60,12 @@
         .pt-safe { padding-top: env(safe-area-inset-top); }
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
         .glass-panel { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        
+        /* Toggle Switch iOS Style for Glassmorphism */
+        .toggle-checkbox:checked { right: 0; border-color: #38bdf8; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #38bdf8; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
+        .toggle-label { width: 3rem; height: 1.5rem; background-color: rgba(255,255,255,0.2); border-radius: 9999px; transition: all 0.3s; }
     </style>
 </head>
 <body class="bg-black text-white overflow-x-hidden min-h-screen" style="background-image: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #4a044e 100%);">
@@ -153,50 +155,106 @@
             );
         };
 
-        // ENORMOUS ACTIVITY LIST MAP
-        const ACTIVITIES_MAP = {
+        // ARRAY ATTIVITA' CON ETICHETTE DINAMICHE
+        const ACTIVITIES = [
             // Salute
-            'Visita Odontoiatrica': 'Salute', 'Pulizia Denti': 'Salute', 'Sbiancamento Dentale': 'Salute',
-            'Visita Cardiologica': 'Salute', 'Elettrocardiogramma': 'Salute',
-            'Visita Dermatologica': 'Salute', 'Mappatura Nei': 'Salute', 
-            'Visita Oculistica': 'Salute', 'Visita Ortopedica': 'Salute', 'Visita Podologica': 'Salute', 
-            'Visita Ginecologica': 'Salute', 'Pap Test': 'Salute', 'Visita Urologica': 'Salute', 'Visita Otorinolaringoiatrica': 'Salute', 
-            'Visita Medico Sportiva': 'Salute', 'Visita Gastroenterologica': 'Salute', 'Visita Endocrinologica': 'Salute', 
-            'Esami del Sangue': 'Salute', 'Esami Urine': 'Salute', 
-            'Vaccinazione Antinfluenzale': 'Salute', 'Richiamo Vaccino': 'Salute', 'Vaccinazione Covid': 'Salute',
-            'Fisioterapia': 'Salute', 'Osteopata': 'Salute', 'Donazione Sangue': 'Salute', 'Visita Pediatrica': 'Salute',
-            'Ecografia': 'Salute', 'Risonanza Magnetica': 'Salute',
-            // Documenti Personali
-            'Carta d\'Identità': 'Documenti Personali', 'Patente di Guida': 'Documenti Personali', 'Passaporto': 'Documenti Personali', 
-            'Tessera Sanitaria': 'Documenti Personali', 'SPID': 'Documenti Personali', 'PEC': 'Documenti Personali', 'Firma Digitale': 'Documenti Personali', 
-            'Visto Turistico': 'Documenti Personali', 'Visto Lavorativo': 'Documenti Personali', 'Permesso di Soggiorno': 'Documenti Personali', 'Porto d\'armi': 'Documenti Personali',
+            { name: 'Visita Odontoiatrica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Pulizia Denti', cat: 'Salute', label: 'Prossima seduta' },
+            { name: 'Sbiancamento Dentale', cat: 'Salute', label: 'Prossima seduta' },
+            { name: 'Visita Cardiologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Elettrocardiogramma', cat: 'Salute', label: 'Prossimo esame' },
+            { name: 'Visita Dermatologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Mappatura Nei', cat: 'Salute', label: 'Prossima mappatura' },
+            { name: 'Visita Oculistica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Ortopedica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Podologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Ginecologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Pap Test', cat: 'Salute', label: 'Prossimo esame' },
+            { name: 'Visita Urologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Otorinolaringoiatrica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Medico Sportiva', cat: 'Salute', label: 'Scadenza certificato' },
+            { name: 'Visita Gastroenterologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Endocrinologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Esami del Sangue', cat: 'Salute', label: 'Prossimo prelievo' },
+            { name: 'Esami Urine', cat: 'Salute', label: 'Prossimo esame' },
+            { name: 'Vaccinazione Antinfluenzale', cat: 'Salute', label: 'Prossimo richiamo' },
+            { name: 'Richiamo Vaccino', cat: 'Salute', label: 'Prossimo richiamo' },
+            { name: 'Vaccinazione Covid', cat: 'Salute', label: 'Prossimo richiamo' },
+            { name: 'Fisioterapia', cat: 'Salute', label: 'Prossima seduta' },
+            { name: 'Osteopata', cat: 'Salute', label: 'Prossima seduta' },
+            { name: 'Donazione Sangue', cat: 'Salute', label: 'Prossima donazione' },
+            { name: 'Visita Pediatrica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Ecografia', cat: 'Salute', label: 'Prossimo esame' },
+            { name: 'Risonanza Magnetica', cat: 'Salute', label: 'Prossimo esame' },
+            // Documenti
+            { name: 'Carta d\'Identità', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Patente di Guida', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Passaporto', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Tessera Sanitaria', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'SPID', cat: 'Documenti Personali', label: 'Scadenza credenziali' },
+            { name: 'PEC', cat: 'Documenti Personali', label: 'Scadenza abbonamento' },
+            { name: 'Firma Digitale', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Visto Turistico', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Visto Lavorativo', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Permesso di Soggiorno', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Porto d\'armi', cat: 'Documenti Personali', label: 'Scadenza' },
             // Veicoli
-            'Bollo Auto': 'Veicoli', 'Bollo Moto': 'Veicoli', 'Assicurazione Auto (RC)': 'Veicoli', 'Assicurazione Moto (RC)': 'Veicoli', 
-            'Revisione Auto': 'Veicoli', 'Revisione Moto': 'Veicoli', 'Tagliando Auto': 'Veicoli', 'Tagliando Moto': 'Veicoli', 
-            'Cambio Gomme Estive': 'Veicoli', 'Cambio Gomme Invernali': 'Veicoli', 'Controllo Fumi Veicolo': 'Veicoli',
-            'Rinnovo Parcheggio Residenti': 'Veicoli', 'Telepass': 'Veicoli',
+            { name: 'Bollo Auto', cat: 'Veicoli', label: 'Scadenza' },
+            { name: 'Bollo Moto', cat: 'Veicoli', label: 'Scadenza' },
+            { name: 'Assicurazione Auto (RC)', cat: 'Veicoli', label: 'Scadenza polizza' },
+            { name: 'Assicurazione Moto (RC)', cat: 'Veicoli', label: 'Scadenza polizza' },
+            { name: 'Revisione Auto', cat: 'Veicoli', label: 'Scadenza revisione' },
+            { name: 'Revisione Moto', cat: 'Veicoli', label: 'Scadenza revisione' },
+            { name: 'Tagliando Auto', cat: 'Veicoli', label: 'Prossimo tagliando' },
+            { name: 'Tagliando Moto', cat: 'Veicoli', label: 'Prossimo tagliando' },
+            { name: 'Cambio Gomme Estive', cat: 'Veicoli', label: 'Da effettuare entro' },
+            { name: 'Cambio Gomme Invernali', cat: 'Veicoli', label: 'Da effettuare entro' },
+            { name: 'Controllo Fumi Veicolo', cat: 'Veicoli', label: 'Scadenza' },
+            { name: 'Rinnovo Parcheggio Residenti', cat: 'Veicoli', label: 'Scadenza' },
+            { name: 'Telepass', cat: 'Veicoli', label: 'Scadenza canone' },
             // Casa
-            'Manutenzione Caldaia': 'Casa', 'Controllo Fumi Caldaia': 'Casa', 'Pulizia Condizionatori': 'Casa', 
-            'Assicurazione Casa': 'Casa', 'Affitto': 'Casa', 'TARI (Spazzatura)': 'Casa', 'IMU': 'Casa', 
-            'Manutenzione Estintori': 'Casa', 'Cambio Filtri Acqua': 'Casa', 'Manutenzione Allarme': 'Casa',
-            'Contratto Luce': 'Casa', 'Contratto Gas': 'Casa', 'Contratto Internet': 'Casa', 'Spese Condominiali': 'Casa',
+            { name: 'Manutenzione Caldaia', cat: 'Casa', label: 'Prossimo controllo' },
+            { name: 'Controllo Fumi Caldaia', cat: 'Casa', label: 'Prossimo controllo' },
+            { name: 'Pulizia Condizionatori', cat: 'Casa', label: 'Prossima pulizia' },
+            { name: 'Assicurazione Casa', cat: 'Casa', label: 'Scadenza polizza' },
+            { name: 'Affitto', cat: 'Casa', label: 'Scadenza contratto' },
+            { name: 'TARI (Spazzatura)', cat: 'Casa', label: 'Scadenza rata' },
+            { name: 'IMU', cat: 'Casa', label: 'Scadenza rata' },
+            { name: 'Manutenzione Estintori', cat: 'Casa', label: 'Prossima revisione' },
+            { name: 'Cambio Filtri Acqua', cat: 'Casa', label: 'Prossimo cambio' },
+            { name: 'Manutenzione Allarme', cat: 'Casa', label: 'Prossimo controllo' },
+            { name: 'Contratto Luce', cat: 'Casa', label: 'Scadenza promo' },
+            { name: 'Contratto Gas', cat: 'Casa', label: 'Scadenza promo' },
+            { name: 'Contratto Internet', cat: 'Casa', label: 'Scadenza promo' },
+            { name: 'Spese Condominiali', cat: 'Casa', label: 'Scadenza rata' },
             // Lavoro & Finanze
-            '730 / Modello Unico': 'Lavoro & Finanze', 'Modello ISEE': 'Lavoro & Finanze', 
-            'Scadenza Carta di Credito': 'Lavoro & Finanze', 'Scadenza Bancomat': 'Lavoro & Finanze', 
-            'Visita Medicina del Lavoro': 'Lavoro & Finanze', 'Assicurazione Professionale': 'Lavoro & Finanze',
-            'Assicurazione Vita': 'Lavoro & Finanze', 'Assicurazione Sanitaria Privata': 'Lavoro & Finanze',
-            'Rata Mutuo/Finanziamento': 'Lavoro & Finanze',
+            { name: '730 / Modello Unico', cat: 'Lavoro & Finanze', label: 'Scadenza presentazione' },
+            { name: 'Modello ISEE', cat: 'Lavoro & Finanze', label: 'Scadenza' },
+            { name: 'Scadenza Carta di Credito', cat: 'Lavoro & Finanze', label: 'Scadenza' },
+            { name: 'Scadenza Bancomat', cat: 'Lavoro & Finanze', label: 'Scadenza' },
+            { name: 'Visita Medicina del Lavoro', cat: 'Lavoro & Finanze', label: 'Prossima visita' },
+            { name: 'Assicurazione Professionale', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
+            { name: 'Assicurazione Vita', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
+            { name: 'Assicurazione Sanitaria Privata', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
+            { name: 'Rata Mutuo/Finanziamento', cat: 'Lavoro & Finanze', label: 'Scadenza rata' },
             // Animali
-            'Vaccinazione Cane': 'Animali', 'Vaccinazione Gatto': 'Animali', 'Antiparassitario Animale': 'Animali', 
-            'Profilassi Filaria': 'Animali', 'Visita Veterinaria Generale': 'Animali', 'Passaporto Animale': 'Animali',
+            { name: 'Vaccinazione Cane', cat: 'Animali', label: 'Prossimo richiamo' },
+            { name: 'Vaccinazione Gatto', cat: 'Animali', label: 'Prossimo richiamo' },
+            { name: 'Antiparassitario Animale', cat: 'Animali', label: 'Prossima somministrazione' },
+            { name: 'Profilassi Filaria', cat: 'Animali', label: 'Prossima somministrazione' },
+            { name: 'Visita Veterinaria Generale', cat: 'Animali', label: 'Prossimo controllo' },
+            { name: 'Passaporto Animale', cat: 'Animali', label: 'Scadenza' },
             // Sport & Abbonamenti
-            'Abbonamento Palestra': 'Sport & Abbonamenti', 'Abbonamento Piscina': 'Sport & Abbonamenti', 'Corso di Lingue': 'Sport & Abbonamenti',
-            'Abbonamento Mezzi Pubblici': 'Sport & Abbonamenti', 'Rinnovo Hosting/Dominio': 'Sport & Abbonamenti', 
-            'Assicurazione Viaggio': 'Sport & Abbonamenti', 'Abbonamento Streaming (Netflix/ecc)': 'Sport & Abbonamenti',
-            'Abbonamento Software': 'Sport & Abbonamenti',
-            // Varie
-            'Altro (Specifica nelle note)': 'Varie'
-        };
+            { name: 'Abbonamento Palestra', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento' },
+            { name: 'Abbonamento Piscina', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento' },
+            { name: 'Corso di Lingue', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
+            { name: 'Abbonamento Mezzi Pubblici', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
+            { name: 'Rinnovo Hosting/Dominio', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
+            { name: 'Assicurazione Viaggio', cat: 'Sport & Abbonamenti', label: 'Scadenza copertura' },
+            { name: 'Abbonamento Streaming', cat: 'Sport & Abbonamenti', label: 'Rinnovo' },
+            { name: 'Abbonamento Software', cat: 'Sport & Abbonamenti', label: 'Rinnovo' },
+            { name: 'Altro', cat: 'Varie', label: 'Scadenza' }
+        ];
 
         const compressImage = (file) => {
             return new Promise((resolve, reject) => {
@@ -205,7 +263,7 @@
                     const img = new Image();
                     img.onload = () => {
                         try {
-                            const MAX_SIZE = 1000; 
+                            const MAX_SIZE = 800; 
                             let width = img.width; let height = img.height;
                             if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
                             else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
@@ -225,7 +283,7 @@
         };
 
         const getExpiryStatus = (dateStr) => {
-            if (!dateStr) return { color: 'text-white/70', status: 'N/A' };
+            if (!dateStr) return { color: 'text-white/40 font-medium', status: 'Nessuna scadenza' };
             const expiry = new Date(dateStr);
             const now = new Date();
             now.setHours(0,0,0,0);
@@ -248,10 +306,10 @@
                     groups[doc.category].push(doc);
                 });
                 
-                // Ordina documenti all'interno di ogni categoria per scadenza (più vicina prima)
+                // Ordina documenti all'interno di ogni categoria
                 Object.keys(groups).forEach(cat => {
                     groups[cat].sort((a, b) => {
-                        if (!a.scadenza) return 1;
+                        if (!a.scadenza) return 1; // Quelli senza scadenza in fondo
                         if (!b.scadenza) return -1;
                         return new Date(a.scadenza) - new Date(b.scadenza);
                     });
@@ -267,7 +325,7 @@
                     <div className="flex justify-between items-start mt-4">
                         <div>
                             <h1 className="text-4xl font-black text-white">{username ? `Ciao, ${username}` : 'Archivio'}</h1>
-                            <p className="text-white/70 mt-1 text-sm">Il tuo schedario personale.</p>
+                            <p className="text-white/70 mt-1 text-sm">ExpirationDate - Schedario Personale</p>
                         </div>
                         <button onClick={onSettingsClick} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors text-white" title="Impostazioni Profilo">
                             <Icons.User />
@@ -294,24 +352,33 @@
                                 {!collapsedCats[category] && (
                                     <div className="p-4 pt-0 space-y-2">
                                         {items.map(doc => {
+                                            const hasExp = !!doc.scadenza;
                                             const expiry = getExpiryStatus(doc.scadenza);
+                                            const isUrgent = hasExp && expiry.color.includes('rose');
+                                            const dynamicLabel = ACTIVITIES.find(a => a.name === doc.name)?.label || 'Scadenza';
+
                                             return (
-                                                <div key={doc.id} onClick={() => onDocClick(doc)} className="bg-black/20 rounded-2xl p-3 flex justify-between items-center hover:bg-black/40 transition cursor-pointer border border-white/5">
+                                                <div key={doc.id} onClick={() => onDocClick(doc)} 
+                                                    className={`rounded-2xl p-3 flex justify-between items-center transition cursor-pointer border ${isUrgent ? 'bg-rose-500/10 border-rose-500/30' : 'bg-black/20 hover:bg-black/40 border-white/5'} ${!hasExp ? 'opacity-70' : ''}`}>
                                                     <div className="flex items-center gap-3 overflow-hidden">
                                                         {doc.photo ? (
-                                                            <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-white/20 overflow-hidden shadow-inner bg-black/40">
+                                                            <div className={`w-12 h-12 rounded-xl flex-shrink-0 border overflow-hidden shadow-inner ${isUrgent ? 'border-rose-400/50' : 'border-white/20 bg-black/40'}`}>
                                                                 <img src={doc.photo} className="w-full h-full object-cover" />
                                                             </div>
                                                         ) : (
-                                                            <div className="w-12 h-12 rounded-xl flex-shrink-0 border border-white/10 bg-white/5 flex items-center justify-center text-white/40">
+                                                            <div className={`w-12 h-12 rounded-xl flex-shrink-0 border flex items-center justify-center ${isUrgent ? 'border-rose-400/30 bg-rose-500/20 text-rose-300' : 'border-white/10 bg-white/5 text-white/40'}`}>
                                                                 <Icons.File />
                                                             </div>
                                                         )}
                                                         <div className="min-w-0">
                                                             <p className="text-[15px] font-bold text-white truncate leading-tight">{doc.name}</p>
-                                                            <p className={`text-[11px] mt-0.5 truncate uppercase font-bold tracking-wider ${expiry.color}`}>
-                                                                Scad: {doc.scadenza ? new Date(doc.scadenza).toLocaleDateString('it-IT') : 'N/A'}
-                                                            </p>
+                                                            {hasExp ? (
+                                                                <p className={`text-[11px] mt-0.5 truncate uppercase font-bold tracking-wider ${expiry.color}`}>
+                                                                    {dynamicLabel}: {new Date(doc.scadenza).toLocaleDateString('it-IT')}
+                                                                </p>
+                                                            ) : (
+                                                                <p className="text-[11px] mt-0.5 uppercase font-medium tracking-wider text-white/40">Nessuna Scadenza</p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -328,7 +395,7 @@
 
         // --- SCHERMATA: SCADENZE ---
         const Scadenze = ({ documents, onDocClick }) => {
-            const [monthsFilter, setMonthsFilter] = useState(3); // 1, 3, or 6
+            const [monthsFilter, setMonthsFilter] = useState(3); 
 
             const expiringDocs = useMemo(() => {
                 const now = new Date();
@@ -337,6 +404,7 @@
                 const filterDate = new Date();
                 filterDate.setMonth(filterDate.getMonth() + monthsFilter);
                 
+                // Exclude documents with no deadline
                 const filtered = documents.filter(doc => {
                     if (!doc.scadenza) return false;
                     const exp = new Date(doc.scadenza);
@@ -373,11 +441,12 @@
 
                     <div className="pt-2 space-y-4">
                         {expiringDocs.length === 0 && (
-                            <p className="text-white/50 text-center italic mt-10">Nessuna scadenza imminente nei prossimi {monthsFilter} mesi. Ottimo!</p>
+                            <p className="text-white/50 text-center italic mt-10">Nessuna scadenza imminente nei prossimi {monthsFilter} mesi.</p>
                         )}
                         {expiringDocs.map(doc => {
                             const expDate = new Date(doc.scadenza);
                             const isCritical = expDate < new Date() || (expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear);
+                            const dynamicLabel = ACTIVITIES.find(a => a.name === doc.name)?.label || 'Scadenza';
                             
                             return (
                                 <div key={doc.id} onClick={() => onDocClick(doc)} 
@@ -391,7 +460,7 @@
                                             {expDate.toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
                                         </p>
                                         <p className="text-[10px] uppercase text-white/50 mt-1 font-bold">
-                                            {isCritical ? 'Critica / Scaduta' : 'In Avvicinamento'}
+                                            {isCritical ? 'Critica / Scaduta' : dynamicLabel}
                                         </p>
                                     </div>
                                 </div>
@@ -455,6 +524,7 @@
             
             // App states
             const [newDoc, setNewDoc] = useState({ name: '', dataSvolgimento: '', scadenza: '', note: '' });
+            const [hasDeadline, setHasDeadline] = useState(true); // Toggle for Deadline
             const [photoProcessed, setPhotoProcessed] = useState(null);
             const [searchTerm, setSearchTerm] = useState('');
             const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -513,8 +583,8 @@
             };
 
             const filteredActivities = useMemo(() => {
-                if(!searchTerm) return Object.keys(ACTIVITIES_MAP);
-                return Object.keys(ACTIVITIES_MAP).filter(a => a.toLowerCase().includes(searchTerm.toLowerCase()));
+                if(!searchTerm) return ACTIVITIES;
+                return ACTIVITIES.filter(a => a.name.toLowerCase().includes(searchTerm.toLowerCase()));
             }, [searchTerm]);
 
             const executeSaveToDb = (docToAdd) => {
@@ -523,6 +593,7 @@
                     setNewDoc({ name: '', dataSvolgimento: '', scadenza: '', note: '' }); 
                     setSearchTerm('');
                     setPhotoProcessed(null);
+                    setHasDeadline(true);
                     setDuplicateModal({ isOpen: false, newDocData: null, existingDocId: null });
                     setToastMsg("Attività salvata con successo!");
                 }).catch(err => setToastMsg("Errore salvataggio: " + err.message));
@@ -530,24 +601,29 @@
 
             const handleSaveRequest = () => {
                 const finalName = newDoc.name || searchTerm;
-                if (!finalName || !newDoc.scadenza) {
-                    return setToastMsg("Inserisci il Nome dell'attività e la Scadenza!");
+                if (!finalName) {
+                    return setToastMsg("Inserisci il Nome dell'attività!");
+                }
+                if (hasDeadline && !newDoc.scadenza) {
+                    return setToastMsg("Inserisci la data di scadenza!");
                 }
                 
                 // Validazione Data
-                if (newDoc.dataSvolgimento && newDoc.scadenza) {
+                if (hasDeadline && newDoc.dataSvolgimento && newDoc.scadenza) {
                     if (new Date(newDoc.scadenza) < new Date(newDoc.dataSvolgimento)) {
-                        return setToastMsg("La data di scadenza non può essere precedente allo svolgimento!");
+                        return setToastMsg("La data futura non può essere precedente allo svolgimento!");
                     }
                 }
 
-                const category = ACTIVITIES_MAP[finalName] || 'Varie';
+                const activityDef = ACTIVITIES.find(a => a.name.toLowerCase() === finalName.toLowerCase());
+                const category = activityDef ? activityDef.cat : 'Varie';
+                
                 const docToAdd = {
                     userId: user.uid, 
                     name: finalName, 
                     category: category,
                     dataSvolgimento: newDoc.dataSvolgimento, 
-                    scadenza: newDoc.scadenza,
+                    scadenza: hasDeadline ? newDoc.scadenza : null, // Null se non c'è scadenza
                     note: newDoc.note || '',
                     photo: photoProcessed 
                 };
@@ -604,6 +680,10 @@
             }
 
             const isAnyModalOpen = isAddOpen || selectedDoc || isProcessing || zoomedImage || settingsOpen || duplicateModal.isOpen;
+
+            // Determina la label dinamica per la scadenza nel form
+            const currentActivityDef = ACTIVITIES.find(a => a.name.toLowerCase() === (newDoc.name || searchTerm).toLowerCase());
+            const dynamicLabelAddForm = currentActivityDef ? currentActivityDef.label : 'Scadenza';
 
             return (
               <div className="relative min-h-screen">
@@ -717,9 +797,13 @@
                                         <p className="text-[10px] uppercase text-white/50 font-bold">Svolgimento</p>
                                         <p className="font-semibold text-white mt-1 text-sm">{selectedDoc.dataSvolgimento ? new Date(selectedDoc.dataSvolgimento).toLocaleDateString('it-IT') : '-'}</p>
                                     </div>
-                                    <div className={`bg-black/20 rounded-2xl p-4 border border-white/5 shadow-inner ${getExpiryStatus(selectedDoc.scadenza).color.includes('rose') ? 'border-rose-500/50 bg-rose-500/10' : ''}`}>
-                                        <p className="text-[10px] uppercase text-white/50 font-bold">Scadenza</p>
-                                        <p className={`font-semibold mt-1 text-sm ${getExpiryStatus(selectedDoc.scadenza).color}`}>{selectedDoc.scadenza ? new Date(selectedDoc.scadenza).toLocaleDateString('it-IT') : '-'}</p>
+                                    <div className={`bg-black/20 rounded-2xl p-4 border shadow-inner ${selectedDoc.scadenza && getExpiryStatus(selectedDoc.scadenza).color.includes('rose') ? 'border-rose-500/50 bg-rose-500/10' : 'border-white/5'}`}>
+                                        <p className="text-[10px] uppercase text-white/50 font-bold">
+                                            {selectedDoc.scadenza ? (ACTIVITIES.find(a => a.name === selectedDoc.name)?.label || 'Scadenza') : 'Scadenza'}
+                                        </p>
+                                        <p className={`font-semibold mt-1 text-sm ${getExpiryStatus(selectedDoc.scadenza).color}`}>
+                                            {selectedDoc.scadenza ? new Date(selectedDoc.scadenza).toLocaleDateString('it-IT') : 'Nessuna scadenza'}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -760,14 +844,14 @@
                     <div className="glass-panel rounded-3xl w-full max-w-sm relative flex flex-col max-h-[85vh] border-t border-white/30 shadow-2xl">
                       <div className="p-6 pb-4 flex justify-between items-center border-b border-white/10">
                           <h2 className="text-2xl font-bold text-white flex items-center gap-2">Nuova Scadenza</h2>
-                          <button onClick={() => { setIsAddOpen(false); setPhotoProcessed(null); setSearchTerm(''); }} className="text-white/50 hover:text-white bg-black/20 rounded-full p-2"><Icons.X /></button>
+                          <button onClick={() => { setIsAddOpen(false); setPhotoProcessed(null); setSearchTerm(''); setHasDeadline(true); }} className="text-white/50 hover:text-white bg-black/20 rounded-full p-2"><Icons.X /></button>
                       </div>
                       
                       <div className="p-6 overflow-y-auto no-scrollbar space-y-5">
                         
                         {/* Auto-complete Search Box */}
                         <div className="relative">
-                            <label className="text-[10px] font-bold text-sky-300 uppercase tracking-wider mb-1.5 block flex items-center gap-1"><Icons.Search /> Cerca Attività / Documento</label>
+                            <label className="text-[10px] font-bold text-sky-300 uppercase tracking-wider mb-1.5 flex items-center gap-1"><Icons.Search /> Cerca Attività / Documento</label>
                             <input 
                                 type="text"
                                 className="block w-full bg-black/30 border border-white/20 rounded-xl p-3 text-white placeholder:text-white/40 focus:ring-2 focus:ring-sky-400 outline-none text-sm"
@@ -779,9 +863,9 @@
                             {showSearchDropdown && searchTerm && (
                                 <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800/95 backdrop-blur-xl border border-white/20 rounded-xl max-h-48 overflow-y-auto z-50 shadow-2xl">
                                     {filteredActivities.length > 0 ? filteredActivities.map(act => (
-                                        <div key={act} onClick={() => { setSearchTerm(act); setNewDoc({...newDoc, name: act}); setShowSearchDropdown(false); }} className="p-3 hover:bg-white/10 cursor-pointer border-b border-white/5 last:border-0">
-                                            <div className="text-sm font-semibold text-white">{act}</div>
-                                            <div className="text-[10px] text-sky-200 uppercase">{ACTIVITIES_MAP[act]}</div>
+                                        <div key={act.name} onClick={() => { setSearchTerm(act.name); setNewDoc({...newDoc, name: act.name}); setShowSearchDropdown(false); }} className="p-3 hover:bg-white/10 cursor-pointer border-b border-white/5 last:border-0">
+                                            <div className="text-sm font-semibold text-white">{act.name}</div>
+                                            <div className="text-[10px] text-sky-200 uppercase">{act.cat}</div>
                                         </div>
                                     )) : (
                                         <div className="p-3 text-xs text-white/50 italic">Nessun risultato. Verrà salvato come "Varie".</div>
@@ -790,13 +874,24 @@
                             )}
                         </div>
                         
+                        {/* Toggle No Scadenza */}
+                        <div className="flex items-center justify-between bg-black/30 p-3 rounded-xl border border-white/10">
+                            <span className={`text-xs font-bold uppercase tracking-wider ${hasDeadline ? 'text-white' : 'text-white/50'}`}>
+                                {hasDeadline ? dynamicLabelAddForm : 'Nessuna scadenza'}
+                            </span>
+                            <div className="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" id="toggle" checked={hasDeadline} onChange={(e) => setHasDeadline(e.target.checked)} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                <label htmlFor="toggle" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+
                         <div className="grid grid-cols-2 gap-3">
                             <div>
                                 <label className="text-[10px] font-bold text-white/60 uppercase tracking-wider mb-1.5 block">Svolgimento (Opz.)</label>
                                 <GlassDateInput placeholder="Data Svolgimento" value={newDoc.dataSvolgimento} onChange={(e) => setNewDoc({...newDoc, dataSvolgimento: e.target.value})} />
                             </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-rose-300 uppercase tracking-wider mb-1.5 block">Scadenza *</label>
+                            <div className={`transition-opacity duration-300 ${hasDeadline ? 'opacity-100' : 'opacity-20 pointer-events-none'}`}>
+                                <label className="text-[10px] font-bold text-rose-300 uppercase tracking-wider mb-1.5 block">Data Futura *</label>
                                 <GlassDateInput placeholder="Scadenza" value={newDoc.scadenza} onChange={(e) => setNewDoc({...newDoc, scadenza: e.target.value})} />
                             </div>
                         </div>
