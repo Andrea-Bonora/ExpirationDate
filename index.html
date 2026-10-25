@@ -155,104 +155,104 @@
             );
         };
 
-        // ARRAY ATTIVITA' CON ETICHETTE DINAMICHE
+        // ARRAY ATTIVITA' CON ETICHETTE DINAMICHE E INTERVALLI
         const ACTIVITIES = [
             // Salute
-            { name: 'Visita Odontoiatrica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Pulizia Denti', cat: 'Salute', label: 'Prossima seduta' },
-            { name: 'Sbiancamento Dentale', cat: 'Salute', label: 'Prossima seduta' },
-            { name: 'Visita Cardiologica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Elettrocardiogramma', cat: 'Salute', label: 'Prossimo esame' },
-            { name: 'Visita Dermatologica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Mappatura Nei', cat: 'Salute', label: 'Prossima mappatura' },
-            { name: 'Visita Oculistica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Odontoiatrica', cat: 'Salute', label: 'Prossimo controllo', intervals: [6, 12, 24], defaultInterval: 12 },
+            { name: 'Pulizia Denti', cat: 'Salute', label: 'Prossima seduta', intervals: [6, 12, 24], defaultInterval: 6 },
+            { name: 'Sbiancamento Dentale', cat: 'Salute', label: 'Prossima seduta', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Visita Cardiologica', cat: 'Salute', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Elettrocardiogramma', cat: 'Salute', label: 'Prossimo esame', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Visita Dermatologica', cat: 'Salute', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Mappatura Nei', cat: 'Salute', label: 'Prossima mappatura', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Visita Oculistica', cat: 'Salute', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 24 },
             { name: 'Visita Ortopedica', cat: 'Salute', label: 'Prossimo controllo' },
             { name: 'Visita Podologica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Visita Ginecologica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Pap Test', cat: 'Salute', label: 'Prossimo esame' },
-            { name: 'Visita Urologica', cat: 'Salute', label: 'Prossimo controllo' },
+            { name: 'Visita Ginecologica', cat: 'Salute', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Pap Test', cat: 'Salute', label: 'Prossimo esame', intervals: [12, 24, 36], defaultInterval: 36 },
+            { name: 'Visita Urologica', cat: 'Salute', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 12 },
             { name: 'Visita Otorinolaringoiatrica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Visita Medico Sportiva', cat: 'Salute', label: 'Scadenza certificato' },
+            { name: 'Visita Medico Sportiva', cat: 'Salute', label: 'Scadenza certificato', intervals: [12], defaultInterval: 12 },
             { name: 'Visita Gastroenterologica', cat: 'Salute', label: 'Prossimo controllo' },
             { name: 'Visita Endocrinologica', cat: 'Salute', label: 'Prossimo controllo' },
-            { name: 'Esami del Sangue', cat: 'Salute', label: 'Prossimo prelievo' },
-            { name: 'Esami Urine', cat: 'Salute', label: 'Prossimo esame' },
-            { name: 'Vaccinazione Antinfluenzale', cat: 'Salute', label: 'Prossimo richiamo' },
+            { name: 'Esami del Sangue', cat: 'Salute', label: 'Prossimo prelievo', intervals: [6, 12, 24], defaultInterval: 12 },
+            { name: 'Esami Urine', cat: 'Salute', label: 'Prossimo esame', intervals: [6, 12, 24], defaultInterval: 12 },
+            { name: 'Vaccinazione Antinfluenzale', cat: 'Salute', label: 'Prossimo richiamo', intervals: [12], defaultInterval: 12 },
             { name: 'Richiamo Vaccino', cat: 'Salute', label: 'Prossimo richiamo' },
-            { name: 'Vaccinazione Covid', cat: 'Salute', label: 'Prossimo richiamo' },
+            { name: 'Vaccinazione Covid', cat: 'Salute', label: 'Prossimo richiamo', intervals: [12], defaultInterval: 12 },
             { name: 'Fisioterapia', cat: 'Salute', label: 'Prossima seduta' },
             { name: 'Osteopata', cat: 'Salute', label: 'Prossima seduta' },
-            { name: 'Donazione Sangue', cat: 'Salute', label: 'Prossima donazione' },
+            { name: 'Donazione Sangue', cat: 'Salute', label: 'Prossima donazione', intervals: [3, 4, 6], defaultInterval: 3 },
             { name: 'Visita Pediatrica', cat: 'Salute', label: 'Prossimo controllo' },
             { name: 'Ecografia', cat: 'Salute', label: 'Prossimo esame' },
             { name: 'Risonanza Magnetica', cat: 'Salute', label: 'Prossimo esame' },
             // Documenti
-            { name: 'Carta d\'Identità', cat: 'Documenti Personali', label: 'Scadenza' },
-            { name: 'Patente di Guida', cat: 'Documenti Personali', label: 'Scadenza' },
-            { name: 'Passaporto', cat: 'Documenti Personali', label: 'Scadenza' },
-            { name: 'Tessera Sanitaria', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Carta d\'Identità', cat: 'Documenti Personali', label: 'Scadenza', intervals: [120], defaultInterval: 120 },
+            { name: 'Patente di Guida', cat: 'Documenti Personali', label: 'Scadenza', intervals: [120], defaultInterval: 120 },
+            { name: 'Passaporto', cat: 'Documenti Personali', label: 'Scadenza', intervals: [120], defaultInterval: 120 },
+            { name: 'Tessera Sanitaria', cat: 'Documenti Personali', label: 'Scadenza', intervals: [72], defaultInterval: 72 },
             { name: 'SPID', cat: 'Documenti Personali', label: 'Scadenza credenziali' },
-            { name: 'PEC', cat: 'Documenti Personali', label: 'Scadenza abbonamento' },
-            { name: 'Firma Digitale', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'PEC', cat: 'Documenti Personali', label: 'Scadenza abbonamento', intervals: [12, 24, 36], defaultInterval: 12 },
+            { name: 'Firma Digitale', cat: 'Documenti Personali', label: 'Scadenza', intervals: [36], defaultInterval: 36 },
             { name: 'Visto Turistico', cat: 'Documenti Personali', label: 'Scadenza' },
             { name: 'Visto Lavorativo', cat: 'Documenti Personali', label: 'Scadenza' },
             { name: 'Permesso di Soggiorno', cat: 'Documenti Personali', label: 'Scadenza' },
-            { name: 'Porto d\'armi', cat: 'Documenti Personali', label: 'Scadenza' },
+            { name: 'Porto d\'armi', cat: 'Documenti Personali', label: 'Scadenza', intervals: [60], defaultInterval: 60 },
             // Veicoli
-            { name: 'Bollo Auto', cat: 'Veicoli', label: 'Scadenza' },
-            { name: 'Bollo Moto', cat: 'Veicoli', label: 'Scadenza' },
-            { name: 'Assicurazione Auto (RC)', cat: 'Veicoli', label: 'Scadenza polizza' },
-            { name: 'Assicurazione Moto (RC)', cat: 'Veicoli', label: 'Scadenza polizza' },
-            { name: 'Revisione Auto', cat: 'Veicoli', label: 'Scadenza revisione' },
-            { name: 'Revisione Moto', cat: 'Veicoli', label: 'Scadenza revisione' },
-            { name: 'Tagliando Auto', cat: 'Veicoli', label: 'Prossimo tagliando' },
-            { name: 'Tagliando Moto', cat: 'Veicoli', label: 'Prossimo tagliando' },
-            { name: 'Cambio Gomme Estive', cat: 'Veicoli', label: 'Da effettuare entro' },
-            { name: 'Cambio Gomme Invernali', cat: 'Veicoli', label: 'Da effettuare entro' },
+            { name: 'Bollo Auto', cat: 'Veicoli', label: 'Scadenza', intervals: [12], defaultInterval: 12 },
+            { name: 'Bollo Moto', cat: 'Veicoli', label: 'Scadenza', intervals: [12], defaultInterval: 12 },
+            { name: 'Assicurazione Auto (RC)', cat: 'Veicoli', label: 'Scadenza polizza', intervals: [6, 12], defaultInterval: 12 },
+            { name: 'Assicurazione Moto (RC)', cat: 'Veicoli', label: 'Scadenza polizza', intervals: [6, 12], defaultInterval: 12 },
+            { name: 'Revisione Auto', cat: 'Veicoli', label: 'Scadenza revisione', intervals: [24, 48], defaultInterval: 24 },
+            { name: 'Revisione Moto', cat: 'Veicoli', label: 'Scadenza revisione', intervals: [24, 48], defaultInterval: 24 },
+            { name: 'Tagliando Auto', cat: 'Veicoli', label: 'Prossimo tagliando', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Tagliando Moto', cat: 'Veicoli', label: 'Prossimo tagliando', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Cambio Gomme Estive', cat: 'Veicoli', label: 'Da effettuare entro', intervals: [6, 12], defaultInterval: 6 },
+            { name: 'Cambio Gomme Invernali', cat: 'Veicoli', label: 'Da effettuare entro', intervals: [6, 12], defaultInterval: 6 },
             { name: 'Controllo Fumi Veicolo', cat: 'Veicoli', label: 'Scadenza' },
-            { name: 'Rinnovo Parcheggio Residenti', cat: 'Veicoli', label: 'Scadenza' },
-            { name: 'Telepass', cat: 'Veicoli', label: 'Scadenza canone' },
+            { name: 'Rinnovo Parcheggio Residenti', cat: 'Veicoli', label: 'Scadenza', intervals: [12], defaultInterval: 12 },
+            { name: 'Telepass', cat: 'Veicoli', label: 'Scadenza canone', intervals: [1, 12], defaultInterval: 12 },
             // Casa
-            { name: 'Manutenzione Caldaia', cat: 'Casa', label: 'Prossimo controllo' },
-            { name: 'Controllo Fumi Caldaia', cat: 'Casa', label: 'Prossimo controllo' },
-            { name: 'Pulizia Condizionatori', cat: 'Casa', label: 'Prossima pulizia' },
-            { name: 'Assicurazione Casa', cat: 'Casa', label: 'Scadenza polizza' },
+            { name: 'Manutenzione Caldaia', cat: 'Casa', label: 'Prossimo controllo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Controllo Fumi Caldaia', cat: 'Casa', label: 'Prossimo controllo', intervals: [24], defaultInterval: 24 },
+            { name: 'Pulizia Condizionatori', cat: 'Casa', label: 'Prossima pulizia', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Assicurazione Casa', cat: 'Casa', label: 'Scadenza polizza', intervals: [12], defaultInterval: 12 },
             { name: 'Affitto', cat: 'Casa', label: 'Scadenza contratto' },
             { name: 'TARI (Spazzatura)', cat: 'Casa', label: 'Scadenza rata' },
             { name: 'IMU', cat: 'Casa', label: 'Scadenza rata' },
-            { name: 'Manutenzione Estintori', cat: 'Casa', label: 'Prossima revisione' },
-            { name: 'Cambio Filtri Acqua', cat: 'Casa', label: 'Prossimo cambio' },
-            { name: 'Manutenzione Allarme', cat: 'Casa', label: 'Prossimo controllo' },
-            { name: 'Contratto Luce', cat: 'Casa', label: 'Scadenza promo' },
-            { name: 'Contratto Gas', cat: 'Casa', label: 'Scadenza promo' },
-            { name: 'Contratto Internet', cat: 'Casa', label: 'Scadenza promo' },
+            { name: 'Manutenzione Estintori', cat: 'Casa', label: 'Prossima revisione', intervals: [6, 12], defaultInterval: 6 },
+            { name: 'Cambio Filtri Acqua', cat: 'Casa', label: 'Prossimo cambio', intervals: [6, 12], defaultInterval: 12 },
+            { name: 'Manutenzione Allarme', cat: 'Casa', label: 'Prossimo controllo', intervals: [12], defaultInterval: 12 },
+            { name: 'Contratto Luce', cat: 'Casa', label: 'Scadenza promo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Contratto Gas', cat: 'Casa', label: 'Scadenza promo', intervals: [12, 24], defaultInterval: 12 },
+            { name: 'Contratto Internet', cat: 'Casa', label: 'Scadenza promo', intervals: [12, 24], defaultInterval: 24 },
             { name: 'Spese Condominiali', cat: 'Casa', label: 'Scadenza rata' },
             // Lavoro & Finanze
-            { name: '730 / Modello Unico', cat: 'Lavoro & Finanze', label: 'Scadenza presentazione' },
-            { name: 'Modello ISEE', cat: 'Lavoro & Finanze', label: 'Scadenza' },
-            { name: 'Scadenza Carta di Credito', cat: 'Lavoro & Finanze', label: 'Scadenza' },
-            { name: 'Scadenza Bancomat', cat: 'Lavoro & Finanze', label: 'Scadenza' },
-            { name: 'Visita Medicina del Lavoro', cat: 'Lavoro & Finanze', label: 'Prossima visita' },
-            { name: 'Assicurazione Professionale', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
-            { name: 'Assicurazione Vita', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
-            { name: 'Assicurazione Sanitaria Privata', cat: 'Lavoro & Finanze', label: 'Scadenza polizza' },
-            { name: 'Rata Mutuo/Finanziamento', cat: 'Lavoro & Finanze', label: 'Scadenza rata' },
+            { name: '730 / Modello Unico', cat: 'Lavoro & Finanze', label: 'Scadenza presentazione', intervals: [12], defaultInterval: 12 },
+            { name: 'Modello ISEE', cat: 'Lavoro & Finanze', label: 'Scadenza', intervals: [12], defaultInterval: 12 },
+            { name: 'Scadenza Carta di Credito', cat: 'Lavoro & Finanze', label: 'Scadenza', intervals: [36, 60], defaultInterval: 60 },
+            { name: 'Scadenza Bancomat', cat: 'Lavoro & Finanze', label: 'Scadenza', intervals: [36, 60], defaultInterval: 60 },
+            { name: 'Visita Medicina del Lavoro', cat: 'Lavoro & Finanze', label: 'Prossima visita', intervals: [12, 24, 60], defaultInterval: 12 },
+            { name: 'Assicurazione Professionale', cat: 'Lavoro & Finanze', label: 'Scadenza polizza', intervals: [12], defaultInterval: 12 },
+            { name: 'Assicurazione Vita', cat: 'Lavoro & Finanze', label: 'Scadenza polizza', intervals: [12], defaultInterval: 12 },
+            { name: 'Assicurazione Sanitaria Privata', cat: 'Lavoro & Finanze', label: 'Scadenza polizza', intervals: [12], defaultInterval: 12 },
+            { name: 'Rata Mutuo/Finanziamento', cat: 'Lavoro & Finanze', label: 'Scadenza rata', intervals: [1], defaultInterval: 1 },
             // Animali
-            { name: 'Vaccinazione Cane', cat: 'Animali', label: 'Prossimo richiamo' },
-            { name: 'Vaccinazione Gatto', cat: 'Animali', label: 'Prossimo richiamo' },
-            { name: 'Antiparassitario Animale', cat: 'Animali', label: 'Prossima somministrazione' },
-            { name: 'Profilassi Filaria', cat: 'Animali', label: 'Prossima somministrazione' },
-            { name: 'Visita Veterinaria Generale', cat: 'Animali', label: 'Prossimo controllo' },
-            { name: 'Passaporto Animale', cat: 'Animali', label: 'Scadenza' },
+            { name: 'Vaccinazione Cane', cat: 'Animali', label: 'Prossimo richiamo', intervals: [12, 36], defaultInterval: 12 },
+            { name: 'Vaccinazione Gatto', cat: 'Animali', label: 'Prossimo richiamo', intervals: [12, 36], defaultInterval: 12 },
+            { name: 'Antiparassitario Animale', cat: 'Animali', label: 'Prossima somministrazione', intervals: [1, 3], defaultInterval: 1 },
+            { name: 'Profilassi Filaria', cat: 'Animali', label: 'Prossima somministrazione', intervals: [1, 12], defaultInterval: 1 },
+            { name: 'Visita Veterinaria Generale', cat: 'Animali', label: 'Prossimo controllo', intervals: [6, 12], defaultInterval: 12 },
+            { name: 'Passaporto Animale', cat: 'Animali', label: 'Scadenza', intervals: [120], defaultInterval: 120 },
             // Sport & Abbonamenti
-            { name: 'Abbonamento Palestra', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento' },
-            { name: 'Abbonamento Piscina', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento' },
+            { name: 'Abbonamento Palestra', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento', intervals: [1, 3, 12], defaultInterval: 12 },
+            { name: 'Abbonamento Piscina', cat: 'Sport & Abbonamenti', label: 'Scadenza abbonamento', intervals: [1, 3, 12], defaultInterval: 12 },
             { name: 'Corso di Lingue', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
-            { name: 'Abbonamento Mezzi Pubblici', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
-            { name: 'Rinnovo Hosting/Dominio', cat: 'Sport & Abbonamenti', label: 'Scadenza' },
+            { name: 'Abbonamento Mezzi Pubblici', cat: 'Sport & Abbonamenti', label: 'Scadenza', intervals: [1, 12], defaultInterval: 12 },
+            { name: 'Rinnovo Hosting/Dominio', cat: 'Sport & Abbonamenti', label: 'Scadenza', intervals: [12], defaultInterval: 12 },
             { name: 'Assicurazione Viaggio', cat: 'Sport & Abbonamenti', label: 'Scadenza copertura' },
-            { name: 'Abbonamento Streaming', cat: 'Sport & Abbonamenti', label: 'Rinnovo' },
-            { name: 'Abbonamento Software', cat: 'Sport & Abbonamenti', label: 'Rinnovo' },
+            { name: 'Abbonamento Streaming', cat: 'Sport & Abbonamenti', label: 'Rinnovo', intervals: [1, 12], defaultInterval: 1 },
+            { name: 'Abbonamento Software', cat: 'Sport & Abbonamenti', label: 'Rinnovo', intervals: [1, 12], defaultInterval: 12 },
             { name: 'Altro', cat: 'Varie', label: 'Scadenza' }
         ];
 
@@ -525,6 +525,7 @@
             // App states
             const [newDoc, setNewDoc] = useState({ name: '', dataSvolgimento: '', scadenza: '', note: '' });
             const [hasDeadline, setHasDeadline] = useState(true); // Toggle for Deadline
+            const [selectedInterval, setSelectedInterval] = useState('manual');
             const [photoProcessed, setPhotoProcessed] = useState(null);
             const [searchTerm, setSearchTerm] = useState('');
             const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -594,6 +595,7 @@
                     setSearchTerm('');
                     setPhotoProcessed(null);
                     setHasDeadline(true);
+                    setSelectedInterval('manual');
                     setDuplicateModal({ isOpen: false, newDocData: null, existingDocId: null });
                     setToastMsg("Attività salvata con successo!");
                 }).catch(err => setToastMsg("Errore salvataggio: " + err.message));
@@ -604,13 +606,27 @@
                 if (!finalName) {
                     return setToastMsg("Inserisci il Nome dell'attività!");
                 }
-                if (hasDeadline && !newDoc.scadenza) {
+                
+                let finalScadenza = newDoc.scadenza;
+
+                // Calcolo automatico della data se è stato selezionato un intervallo
+                if (hasDeadline && selectedInterval !== 'manual') {
+                    const monthsToAdd = parseInt(selectedInterval, 10);
+                    const baseDate = newDoc.dataSvolgimento ? new Date(newDoc.dataSvolgimento) : new Date();
+                    const computedDate = new Date(baseDate);
+                    computedDate.setMonth(computedDate.getMonth() + monthsToAdd);
+                    
+                    const yyyy = computedDate.getFullYear();
+                    const mm = String(computedDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(computedDate.getDate()).padStart(2, '0');
+                    finalScadenza = `${yyyy}-${mm}-${dd}`;
+                } else if (hasDeadline && !newDoc.scadenza) {
                     return setToastMsg("Inserisci la data di scadenza!");
                 }
                 
                 // Validazione Data
-                if (hasDeadline && newDoc.dataSvolgimento && newDoc.scadenza) {
-                    if (new Date(newDoc.scadenza) < new Date(newDoc.dataSvolgimento)) {
+                if (hasDeadline && newDoc.dataSvolgimento && finalScadenza) {
+                    if (new Date(finalScadenza) < new Date(newDoc.dataSvolgimento)) {
                         return setToastMsg("La data futura non può essere precedente allo svolgimento!");
                     }
                 }
@@ -623,7 +639,7 @@
                     name: finalName, 
                     category: category,
                     dataSvolgimento: newDoc.dataSvolgimento, 
-                    scadenza: hasDeadline ? newDoc.scadenza : null, // Null se non c'è scadenza
+                    scadenza: hasDeadline ? finalScadenza : null, // Usa la data calcolata o quella manuale
                     note: newDoc.note || '',
                     photo: photoProcessed 
                 };
@@ -681,9 +697,10 @@
 
             const isAnyModalOpen = isAddOpen || selectedDoc || isProcessing || zoomedImage || settingsOpen || duplicateModal.isOpen;
 
-            // Determina la label dinamica per la scadenza nel form
+            // Determina la label dinamica e la presenza di intervalli per il form
             const currentActivityDef = ACTIVITIES.find(a => a.name.toLowerCase() === (newDoc.name || searchTerm).toLowerCase());
             const dynamicLabelAddForm = currentActivityDef ? currentActivityDef.label : 'Scadenza';
+            const hasIntervals = currentActivityDef && currentActivityDef.intervals && currentActivityDef.intervals.length > 0;
 
             return (
               <div className="relative min-h-screen">
@@ -857,13 +874,26 @@
                                 className="block w-full bg-black/30 border border-white/20 rounded-xl p-3 text-white placeholder:text-white/40 focus:ring-2 focus:ring-sky-400 outline-none text-sm"
                                 placeholder="Es. Bollo Auto, Patente, ISEE..."
                                 value={searchTerm}
-                                onChange={(e) => { setSearchTerm(e.target.value); setShowSearchDropdown(true); setNewDoc({...newDoc, name: e.target.value}); }}
+                                onChange={(e) => { 
+                                    setSearchTerm(e.target.value); 
+                                    setShowSearchDropdown(true); 
+                                    setNewDoc({...newDoc, name: e.target.value}); 
+                                    // Se scrivendo trova un match esatto, aggiorna l'intervallo
+                                    const match = ACTIVITIES.find(a => a.name.toLowerCase() === e.target.value.toLowerCase());
+                                    if(match && match.defaultInterval) setSelectedInterval(match.defaultInterval.toString());
+                                    else setSelectedInterval('manual');
+                                }}
                                 onFocus={() => setShowSearchDropdown(true)}
                             />
                             {showSearchDropdown && searchTerm && (
                                 <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800/95 backdrop-blur-xl border border-white/20 rounded-xl max-h-48 overflow-y-auto z-50 shadow-2xl">
                                     {filteredActivities.length > 0 ? filteredActivities.map(act => (
-                                        <div key={act.name} onClick={() => { setSearchTerm(act.name); setNewDoc({...newDoc, name: act.name}); setShowSearchDropdown(false); }} className="p-3 hover:bg-white/10 cursor-pointer border-b border-white/5 last:border-0">
+                                        <div key={act.name} onClick={() => { 
+                                            setSearchTerm(act.name); 
+                                            setNewDoc({...newDoc, name: act.name}); 
+                                            setSelectedInterval(act.defaultInterval ? act.defaultInterval.toString() : 'manual');
+                                            setShowSearchDropdown(false); 
+                                        }} className="p-3 hover:bg-white/10 cursor-pointer border-b border-white/5 last:border-0">
                                             <div className="text-sm font-semibold text-white">{act.name}</div>
                                             <div className="text-[10px] text-sky-200 uppercase">{act.cat}</div>
                                         </div>
@@ -891,8 +921,30 @@
                                 <GlassDateInput placeholder="Data Svolgimento" value={newDoc.dataSvolgimento} onChange={(e) => setNewDoc({...newDoc, dataSvolgimento: e.target.value})} />
                             </div>
                             <div className={`transition-opacity duration-300 ${hasDeadline ? 'opacity-100' : 'opacity-20 pointer-events-none'}`}>
-                                <label className="text-[10px] font-bold text-rose-300 uppercase tracking-wider mb-1.5 block">Data Futura *</label>
-                                <GlassDateInput placeholder="Scadenza" value={newDoc.scadenza} onChange={(e) => setNewDoc({...newDoc, scadenza: e.target.value})} />
+                                <label className="text-[10px] font-bold text-rose-300 uppercase tracking-wider mb-1.5 block">{hasDeadline ? dynamicLabelAddForm : 'Scadenza'} *</label>
+                                
+                                {hasIntervals ? (
+                                    <div className="space-y-2">
+                                        <select 
+                                            value={selectedInterval} 
+                                            onChange={(e) => setSelectedInterval(e.target.value)}
+                                            className="block w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:ring-2 focus:ring-sky-300 outline-none text-sm appearance-none"
+                                            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right 0.5rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.5em 1.5em` }}
+                                        >
+                                            {currentActivityDef.intervals.map(months => (
+                                                <option key={months} value={months} className="text-black bg-white">
+                                                    Tra {months >= 12 ? (months % 12 === 0 ? (months === 12 ? '1 anno' : `${months/12} anni`) : `${months} mesi`) : (months === 1 ? '1 mese' : `${months} mesi`)}
+                                                </option>
+                                            ))}
+                                            <option value="manual" className="text-black bg-white">Data manuale...</option>
+                                        </select>
+                                        {selectedInterval === 'manual' && (
+                                            <div className="mt-2 animate-pulse"><GlassDateInput placeholder="Inserisci Data" value={newDoc.scadenza} onChange={(e) => setNewDoc({...newDoc, scadenza: e.target.value})} /></div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <GlassDateInput placeholder="Scadenza" value={newDoc.scadenza} onChange={(e) => setNewDoc({...newDoc, scadenza: e.target.value})} />
+                                )}
                             </div>
                         </div>
 
